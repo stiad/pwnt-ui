@@ -3313,89 +3313,6 @@
       #overlay .card.hidden-card { display: none; }
       /* mid-return-to-menu: background stays, the login card never paints */
       html.tomenu #overlay .card { visibility: hidden; }
-
-      /* === Cinematic landing — ember particles, entrance animations ======= */
-      #ember-layer {
-        position: absolute;
-        inset: 0;
-        overflow: hidden;
-        pointer-events: none;
-        z-index: 0;
-      }
-      #ember-layer .ember {
-        position: absolute;
-        bottom: -12px;
-        width: 3px;
-        height: 3px;
-        border-radius: 50%;
-        background: var(--copper);
-        box-shadow: 0 0 6px rgba(247, 148, 34, 0.8), 0 0 14px rgba(247, 148, 34, 0.35);
-        opacity: 0;
-        animation: ember-rise linear infinite;
-      }
-      #ember-layer .ember.wide { width: 4px; height: 4px; }
-      #ember-layer .ember.thin { width: 2px; height: 2px; }
-      @keyframes ember-rise {
-        0% { opacity: 0; transform: translateY(0) translateX(0) scale(1); }
-        8% { opacity: 0.7; }
-        50% { transform: translateY(-50vh) translateX(8px) scale(0.7); }
-        92% { opacity: 0.2; }
-        100% { opacity: 0; transform: translateY(-105vh) translateX(-4px) scale(0.2); }
-      }
-      /* Breathing background glow — the forge exhales */
-      #overlay::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(ellipse at 50% 38%, rgba(247, 148, 34, 0.07), transparent 62%);
-        animation: overlay-breathe 6s ease-in-out infinite;
-        pointer-events: none;
-        z-index: 0;
-      }
-      @keyframes overlay-breathe {
-        0%, 100% { opacity: 0.4; }
-        50% { opacity: 1; }
-      }
-      /* Card slides in from below */
-      #overlay .card {
-        animation: card-enter 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) both;
-      }
-      @keyframes card-enter {
-        from { opacity: 0; transform: translateY(24px) scale(0.96); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
-      }
-      /* Logo fades in with a warm glow halo that settles */
-      #overlay #logo {
-        animation: logo-enter 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) 0.12s both;
-      }
-      @keyframes logo-enter {
-        from { opacity: 0; transform: scale(0.92); filter: drop-shadow(0 0 40px rgba(247, 148, 34, 0.7)) drop-shadow(0 10px 28px rgba(0, 0, 0, 0.65)); }
-        to { opacity: 1; transform: scale(1); filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.65)); }
-      }
-      /* Tagline letters settle from wide tracking */
-      #overlay .tagline {
-        animation: tagline-enter 0.6s ease 0.4s both;
-      }
-      @keyframes tagline-enter {
-        from { opacity: 0; letter-spacing: 0.5em; }
-        to { opacity: 1; letter-spacing: 0.3em; }
-      }
-      /* Input fields + button stagger in after the logo */
-      #overlay .card input,
-      #overlay #code-error,
-      #overlay #deploy-btn {
-        animation: field-enter 0.5s ease both;
-      }
-      #overlay .card input:nth-of-type(1) { animation-delay: 0.5s; }
-      #overlay .card input:nth-of-type(2) { animation-delay: 0.58s; }
-      #overlay #code-error { animation-delay: 0.66s; }
-      #overlay #deploy-btn { animation-delay: 0.74s; }
-      @keyframes field-enter {
-        from { opacity: 0; transform: translateY(8px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      /* Keep the card above the ember/glow layers */
-      #overlay .card, #overlay #mainmenu { position: relative; z-index: 1; }
       /* Scoreboard (held Tab) — matches the esports HUD language. No clip-path
          here: it would clip the 100vmax battlefield-dim box-shadow. */
       #scoreboard {
@@ -4549,20 +4466,6 @@
       <div id="btn-aim" class="tbtn">ADS</div>
     </div>
     <div id="overlay">
-      <div id="ember-layer">
-        <span class="ember" style="left:5%;animation-duration:8s;animation-delay:0s"></span>
-        <span class="ember thin" style="left:12%;animation-duration:12s;animation-delay:2s"></span>
-        <span class="ember" style="left:22%;animation-duration:9s;animation-delay:1s"></span>
-        <span class="ember wide" style="left:35%;animation-duration:11s;animation-delay:3s"></span>
-        <span class="ember" style="left:48%;animation-duration:7s;animation-delay:0.5s"></span>
-        <span class="ember thin" style="left:58%;animation-duration:13s;animation-delay:4s"></span>
-        <span class="ember" style="left:68%;animation-duration:10s;animation-delay:1.5s"></span>
-        <span class="ember wide" style="left:78%;animation-duration:8.5s;animation-delay:2.5s"></span>
-        <span class="ember" style="left:88%;animation-duration:11.5s;animation-delay:3.5s"></span>
-        <span class="ember thin" style="left:15%;animation-duration:14s;animation-delay:5s"></span>
-        <span class="ember" style="left:42%;animation-duration:9.5s;animation-delay:6s"></span>
-        <span class="ember wide" style="left:72%;animation-duration:12.5s;animation-delay:4.5s"></span>
-      </div>
       <div class="card">
         <img id="logo" src="/images/wordmark-web.png" alt="pwnt.net" />
         <p class="tagline">ALPHA TEST · invite only</p>
