@@ -428,116 +428,170 @@ function paintBoard(rowsData = BOARD) {
   const rowsEl = $("mm-lb-rows");
   if (!rowsEl) return;
   rowsEl.textContent = "";
+  if (!rowsData.length) return;
 
-  const podium = document.createElement("div");
-  podium.className = "mm-podium";
-  for (const i of [1, 0, 2]) {
-    const r = rowsData[i];
-    if (!r) continue;
-    const pd = document.createElement("div");
-    pd.className = `pd pd${i + 1}`;
-    const card = document.createElement("div");
-    card.className = "pd-card" + (r.name === OPERATOR ? " me" : "");
-    const medal = document.createElement("div");
-    medal.className = "pd-medal";
-    if (i === 0) {
-      medal.innerHTML =
-        '<svg viewBox="0 0 24 14"><path d="M2 13 L2 4 L7.5 8 L12 1 L16.5 8 L22 4 L22 13 Z"/></svg>';
-    } else {
-      medal.textContent = String(i + 1);
-    }
-    card.append(medal);
+  const top = Math.max(1, rowsData[0].kills);
+  const isMe = (r) => r.name === OPERATOR;
+  const youTag = () => {
+    const s = document.createElement("span");
+    s.className = "mm-lb-you";
+    s.textContent = "YOU";
+    return s;
+  };
+  const clsIcon = (fav) => {
+    if (fav < 0) return null;
+    const el = document.createElement("i");
+    el.style.setProperty("--sil", `url('${CLS_SIL[fav]}')`);
+    el.title = CLS_NAME[fav];
+    return el;
+  };
+  const clsLabel = (fav) => (fav >= 0 ? CLS_NAME[fav] : "UNRANKED CLASS");
+
+  // ---- champion spotlight (rank 1)
+  const c = rowsData[0];
+  const champ = document.createElement("div");
+  champ.className = "lb-champ" + (isMe(c) ? " me" : "");
+
+  const crest = document.createElement("div");
+  crest.className = "lb-champ-crest";
+  crest.innerHTML =
+    '<svg viewBox="0 0 24 14"><path d="M2 13 L2 4 L7.5 8 L12 1 L16.5 8 L22 4 L22 13 Z"/></svg>' +
+    '<span class="lb-champ-num">01</span><span class="lb-champ-badge">CHAMPION</span>';
+
+  const info = document.createElement("div");
+  info.className = "lb-champ-info";
+  const cName = document.createElement("div");
+  cName.className = "lb-champ-name";
+  const cNameTxt = document.createElement("span");
+  cNameTxt.textContent = c.name;
+  cName.append(cNameTxt);
+  if (isMe(c)) cName.append(youTag());
+  const cCls = document.createElement("div");
+  cCls.className = "lb-champ-cls";
+  const cIcon = clsIcon(c.fav);
+  if (cIcon) cCls.append(cIcon);
+  cCls.append(document.createTextNode(clsLabel(c.fav)));
+  const stats = document.createElement("div");
+  stats.className = "lb-champ-stats";
+  for (const [val, lbl] of [
+    [c.kills, "KILLS"],
+    [kd(c), "K/D"],
+    [c.wins, "WINS"],
+    [c.hs, "HS"],
+  ]) {
+    const cs = document.createElement("div");
+    cs.className = "cs";
+    const b = document.createElement("b");
+    b.textContent = String(val);
+    const sp = document.createElement("span");
+    sp.textContent = lbl;
+    cs.append(b, sp);
+    stats.append(cs);
+  }
+  info.append(cName, cCls, stats);
+  champ.append(crest, info);
+  if (c.fav >= 0) {
+    const sil = document.createElement("div");
+    sil.className = "lb-champ-sil";
+    sil.style.setProperty("--sil", `url('${CLS_SIL[c.fav]}')`);
+    champ.append(sil);
+  }
+  rowsEl.append(champ);
+
+  // ---- contenders (rank 2 & 3)
+  const duo = document.createElement("div");
+  duo.className = "lb-duo";
+  [1, 2].forEach((idx) => {
+    const r = rowsData[idx];
+    if (!r) return;
+    const con = document.createElement("div");
+    con.className = `lb-con con${idx + 1}` + (isMe(r) ? " me" : "");
+    const num = document.createElement("div");
+    num.className = "lb-con-num";
+    num.textContent = `0${idx + 1}`;
+    const body = document.createElement("div");
+    body.className = "lb-con-body";
+    const nm = document.createElement("div");
+    nm.className = "lb-con-name";
+    const nmTxt = document.createElement("span");
+    nmTxt.textContent = r.name;
+    nm.append(nmTxt);
+    if (isMe(r)) nm.append(youTag());
+    const cls = document.createElement("div");
+    cls.className = "lb-con-cls";
+    const cli = clsIcon(r.fav);
+    if (cli) cls.append(cli);
+    cls.append(document.createTextNode(clsLabel(r.fav)));
+    const kills = document.createElement("div");
+    kills.className = "lb-con-kills";
+    const kb = document.createElement("b");
+    kb.textContent = String(r.kills);
+    kills.append(kb, "KILLS");
+    const sub = document.createElement("div");
+    sub.className = "lb-con-sub";
+    sub.textContent = `${r.wins} W · K/D ${kd(r)} · ${r.hs} HS`;
+    body.append(nm, cls, kills, sub);
+    con.append(num, body);
     if (r.fav >= 0) {
       const sil = document.createElement("div");
-      sil.className = "pd-sil";
+      sil.className = "lb-con-sil";
       sil.style.setProperty("--sil", `url('${CLS_SIL[r.fav]}')`);
-      sil.title = CLS_NAME[r.fav];
-      card.append(sil);
+      con.append(sil);
     }
-    const nm = document.createElement("div");
-    nm.className = "pd-name";
-    nm.textContent = r.name;
-    const kills = document.createElement("div");
-    kills.className = "pd-kills";
-    const kn = document.createElement("b");
-    kn.textContent = String(r.kills);
-    kills.append(kn, " KILLS");
-    const sub = document.createElement("div");
-    sub.className = "pd-sub";
-    sub.textContent = `${r.wins} W · K/D ${kd(r)} · ${r.hs} HS`;
-    card.append(nm, kills, sub);
-    const step = document.createElement("div");
-    step.className = "pd-step";
-    step.textContent = `#${i + 1}`;
-    pd.append(card, step);
-    podium.append(pd);
-  }
-  rowsEl.append(podium);
+    duo.append(con);
+  });
+  rowsEl.append(duo);
 
+  // ---- combat ladder (rank 4+)
   const rest = rowsData.slice(3);
   if (!rest.length) return;
+  const ladder = document.createElement("div");
+  ladder.className = "lb-ladder";
   const hdr = document.createElement("div");
-  hdr.className = "mm-lb-row hdr";
-  for (const [txt, cls] of [
-    ["#", "mm-lb-rank"],
-    ["Operator", ""],
-    ["Kills", "mm-lb-k"],
-    ["K/D", "mm-lb-kd"],
-    ["Wins", "mm-lb-w"],
-    ["HS", "mm-lb-hs"],
-  ]) {
-    const c = document.createElement("div");
-    if (cls) c.className = cls;
-    c.textContent = txt;
-    hdr.append(c);
+  hdr.className = "lb-lad-hdr";
+  for (const t of ["#", "Operator", "Kills", "K/D", "Wins", "HS"]) {
+    const s = document.createElement("span");
+    s.textContent = t;
+    hdr.append(s);
   }
-  rowsEl.append(hdr);
+  ladder.append(hdr);
 
   rest.forEach((r, j) => {
     const i = j + 3;
-    const me = r.name === OPERATOR;
+    const me = isMe(r);
     const row = document.createElement("div");
-    row.className = "mm-lb-row" + (me ? " me" : "");
+    row.className = "lb-row" + (me ? " me" : "");
+    row.style.setProperty("--share", `${Math.round((r.kills / top) * 100)}%`);
 
     const rank = document.createElement("div");
-    rank.className = "mm-lb-rank";
-    rank.textContent = `#${i + 1}`;
-    row.append(rank);
+    rank.className = "lb-rank";
+    rank.textContent = String(i + 1).padStart(2, "0");
 
     const op = document.createElement("div");
-    op.className = "mm-lb-op";
-    if (r.fav >= 0) {
-      const cls = document.createElement("span");
-      cls.className = "mm-lb-cls";
-      cls.style.setProperty("--sil", `url('${CLS_SIL[r.fav]}')`);
-      cls.title = CLS_NAME[r.fav];
-      op.append(cls);
-    }
+    op.className = "lb-op";
+    const oi = clsIcon(r.fav);
+    if (oi) op.append(oi);
     const nm = document.createElement("span");
     nm.className = "nm";
     nm.textContent = r.name;
     op.append(nm);
-    if (me) {
-      const you = document.createElement("span");
-      you.className = "mm-lb-you";
-      you.textContent = "YOU";
-      op.append(you);
-    }
-    row.append(op);
+    if (me) op.append(youTag());
+    row.append(rank, op);
 
     for (const [cls, val] of [
-      ["mm-lb-k", String(r.kills)],
-      ["mm-lb-kd", kd(r)],
-      ["mm-lb-w", String(r.wins)],
-      ["mm-lb-hs", String(r.hs)],
+      ["lb-k", String(r.kills)],
+      ["lb-kd", kd(r)],
+      ["lb-w", String(r.wins)],
+      ["lb-hs", String(r.hs)],
     ]) {
-      const c = document.createElement("div");
-      c.className = cls;
-      c.textContent = val;
-      row.append(c);
+      const d = document.createElement("div");
+      d.className = cls;
+      d.textContent = val;
+      row.append(d);
     }
-    rowsEl.append(row);
+    ladder.append(row);
   });
+  rowsEl.append(ladder);
 }
 
 // Mode/period buttons: re-render with scaled numbers so switching visibly
