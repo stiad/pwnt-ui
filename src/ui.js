@@ -147,6 +147,25 @@ const STACK_PACKS = [
   { id: "pk_vault", name: "Vault", stacks: 2400, bonus: 20, usd: 19.99, tag: "", line: "serious kit money" },
   { id: "pk_lode", name: "Motherlode", stacks: 6500, bonus: 30, usd: 49.99, tag: "BEST VALUE", line: "never count stacks again" },
 ];
+// Featured drop + set/shipment framing shown at the top of the armory.
+const FEATURED = {
+  id: "tracer_hellfire",
+  kicker: "FEATURED DROP",
+  blurb: "Every shot you fire is a warning.",
+  ends: "2D 14H LEFT",
+  img: "/shop-featured-hellfire.webp",
+};
+const INFERNO_SET = {
+  price: 499,
+  bonus: "+30% STACKS",
+  items: [
+    { id: "tracer_hellfire", name: "HELLFIRE" },
+    { id: "gear_crimson", name: "INFERNO HELM" },
+    { id: "ward_crimson", name: "INFERNO CORE" },
+  ],
+};
+const NEXT_SHIP = { in: "0D 21H 37M", line: "Weapon skins · Operator gear · More tracers" };
+
 const TIER_ORDER = { legendary: 0, epic: 1, rare: 2, common: 3, "": 4 };
 const byRarity = (a, b) =>
   (TIER_ORDER[a.tier] ?? 9) - (TIER_ORDER[b.tier] ?? 9) || a.price - b.price;
@@ -618,19 +637,7 @@ function card(item, inStash) {
     });
   } else {
     btn.textContent = "BUY";
-    on(btn, "click", () => {
-      if (stacks < item.price) {
-        btn.classList.add("err");
-        btn.textContent = "NOT ENOUGH";
-        setTimeout(renderShop, 1400);
-        return;
-      }
-      stacks -= item.price;
-      owned = [...owned, item.id];
-      equip[item.kind] = item.id;
-      paintHeader();
-      renderShop();
-    });
+    on(btn, "click", () => purchase(item, btn));
   }
   c.append(btn);
   if (!has) c.dataset.item = item.id;
@@ -696,6 +703,165 @@ function stackCard(pk) {
   return c;
 }
 
+function mk(tag, cls, txt) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+
+function purchase(item, btn) {
+  if (stacks < item.price) {
+    btn.classList.add("err");
+    btn.textContent = "NOT ENOUGH";
+    setTimeout(renderShop, 1400);
+    return;
+  }
+  stacks -= item.price;
+  owned = [...owned, item.id];
+  equip[item.kind] = item.id;
+  paintHeader();
+  renderShop();
+}
+
+function stacksPrice(value, prefix) {
+  const wrap = mk("span", "px-inline");
+  if (prefix) wrap.append(document.createTextNode(prefix));
+  const ic = document.createElement("img");
+  ic.src = "/images/stacks-web.webp";
+  ic.alt = "stacks";
+  wrap.append(ic, document.createTextNode(String(value)));
+  return wrap;
+}
+
+// Featured hero + "shop packs" aside — the top row of the armory.
+function featuredTop() {
+  const item = SHOP_CATALOG.find((i) => i.id === FEATURED.id);
+  const wrap = mk("div", "shop-top");
+
+  const feat = mk("div", "featured tier-" + item.tier);
+  feat.style.setProperty("--rc", item.hex);
+  const media = mk("div", "ft-media");
+  const img = document.createElement("img");
+  img.src = FEATURED.img;
+  img.alt = "";
+  media.append(img);
+  feat.append(media);
+
+  const info = mk("div", "ft-info");
+  info.append(mk("span", "ft-kicker", FEATURED.kicker));
+  const h = mk("h3", "ft-title");
+  h.append(document.createTextNode(item.name.toUpperCase() + " "));
+  h.append(mk("i", null, "// " + item.tier.toUpperCase()));
+  info.append(h, mk("p", "ft-blurb", FEATURED.blurb), mk("span", "ft-timer", FEATURED.ends));
+
+  const actions = mk("div", "ft-actions");
+  const has = owned.includes(item.id);
+  const isEq = equip[item.kind] === item.id;
+  const buy = mk("button", "ft-buy");
+  buy.type = "button";
+  if (isEq) {
+    buy.classList.add("eq");
+    buy.textContent = "EQUIPPED";
+  } else if (has) {
+    buy.textContent = "EQUIP";
+    on(buy, "click", () => { equip[item.kind] = item.id; renderShop(); });
+  } else {
+    buy.append(stacksPrice(item.price, "BUY FOR "));
+    on(buy, "click", () => purchase(item, buy));
+  }
+  const prev = mk("button", "ft-preview", "VIEW PREVIEW");
+  prev.type = "button";
+  on(prev, "click", () => { shopCat = item.kind; renderShop(); });
+  actions.append(buy, prev);
+  info.append(actions);
+
+  const dots = mk("div", "ft-dots");
+  for (let i = 0; i < 4; i++) dots.append(mk("span", "ft-dot" + (i === 0 ? " on" : "")));
+  info.append(dots);
+
+  feat.append(info);
+  wrap.append(feat);
+
+  const aside = mk("div", "packs-aside");
+  aside.append(mk("span", "pa-kicker", "LIVE IN INFERNO"));
+  const paIcon = document.createElement("img");
+  paIcon.src = "/images/stacks-web.webp";
+  paIcon.alt = "";
+  paIcon.className = "pa-icon";
+  aside.append(paIcon, mk("p", "pa-line", "Fuel the servers. Up to +30% bonus on bigger packs."));
+  const paBtn = mk("button", "pa-btn", "SHOP PACKS");
+  paBtn.type = "button";
+  on(paBtn, "click", () => { shopCat = "stacks"; renderShop(); });
+  aside.append(paBtn);
+  wrap.append(aside);
+
+  return wrap;
+}
+
+// "Complete the set" progress strip.
+function setStrip() {
+  const strip = mk("div", "set-strip");
+  strip.append(mk("span", "ss-kicker", "COMPLETE THE INFERNO SET"));
+
+  const cells = mk("div", "ss-items");
+  let have = 0;
+  for (const s of INFERNO_SET.items) {
+    const cat = SHOP_CATALOG.find((i) => i.id === s.id);
+    const owns = owned.includes(s.id);
+    if (owns) have++;
+    const cell = mk("div", "ss-cell" + (owns ? " owned" : ""));
+    const sw = mk("span", "ss-swatch");
+    sw.style.setProperty("--c", cat.hex);
+    cell.append(sw, mk("span", "ss-name", s.name));
+    if (owns) cell.append(mk("i", "ss-check", "\u2713"));
+    cells.append(cell);
+  }
+  strip.append(cells);
+
+  const prog = mk("div", "ss-prog");
+  prog.append(mk("span", "ss-count", `${have}/${INFERNO_SET.items.length} OWNED`));
+  const bar = mk("div", "ss-bar");
+  const fill = mk("i", "ss-fill");
+  fill.style.width = `${(have / INFERNO_SET.items.length) * 100}%`;
+  bar.append(fill);
+  prog.append(bar, mk("span", "ss-bonus", INFERNO_SET.bonus));
+  strip.append(prog);
+
+  const btn = mk("button", "ss-btn");
+  btn.type = "button";
+  btn.append(stacksPrice(INFERNO_SET.price, "COMPLETE SET \u2014 "));
+  on(btn, "click", () => {
+    if (stacks < INFERNO_SET.price) {
+      btn.textContent = "NOT ENOUGH";
+      setTimeout(renderShop, 1400);
+      return;
+    }
+    stacks -= INFERNO_SET.price;
+    for (const s of INFERNO_SET.items) if (!owned.includes(s.id)) owned = [...owned, s.id];
+    paintHeader();
+    renderShop();
+  });
+  strip.append(btn);
+  return strip;
+}
+
+// "Next shipment" teaser bar.
+function shipBar() {
+  const bar = mk("div", "ship-bar");
+  const icon = document.createElement("img");
+  icon.src = "/images/stacks-web.webp";
+  icon.alt = "";
+  icon.className = "sh-icon";
+  const txt = mk("div", "sh-txt");
+  txt.append(mk("span", "sh-kicker", "NEXT SHIPMENT"), mk("span", "sh-timer", NEXT_SHIP.in));
+  bar.append(icon, txt, mk("p", "sh-line", NEXT_SHIP.line));
+  const btn = mk("button", "sh-btn", "SNEAK PEEK");
+  btn.type = "button";
+  bar.append(btn);
+  return bar;
+}
+
 // One render for both panes, same as the real client's render().
 function renderShop() {
   const shop = $("shop-grid");
@@ -704,25 +870,7 @@ function renderShop() {
     const sub = document.querySelector("#mm-shop .mm-pane-sub");
     if (sub) sub.textContent = SHOP_PITCH[shopCat] ?? "";
 
-    const banner = document.createElement("div");
-    banner.id = "stacks-banner";
-    banner.classList.toggle("live", shopCat === "stacks");
-    const bIcon = document.createElement("img");
-    bIcon.src = "/images/stacks-web.webp";
-    bIcon.alt = "";
-    const bText = document.createElement("div");
-    bText.className = "sb-text";
-    const bTitle = document.createElement("b");
-    bTitle.textContent = "GET STACKS";
-    const bSub = document.createElement("span");
-    bSub.textContent = "fuel the armory — up to +30% bonus on bigger packs";
-    bText.append(bTitle, bSub);
-    const bCta = document.createElement("span");
-    bCta.className = "sb-cta";
-    bCta.textContent = shopCat === "stacks" ? "PICK A PACK" : "SHOP PACKS →";
-    banner.append(bIcon, bText, bCta);
-    on(banner, "click", () => { shopCat = "stacks"; renderShop(); });
-    shop.append(banner);
+    shop.append(featuredTop());
 
     const counts = new Map(
       KINDS.map(([k]) => [k, SHOP_CATALOG.filter((i) => i.kind === k).length]),
@@ -738,6 +886,10 @@ function renderShop() {
       }
     }
     shop.append(grid);
+
+    if (shopCat !== "stacks") {
+      shop.append(setStrip(), shipBar());
+    }
   }
 
   const stash = $("stash-grid");
