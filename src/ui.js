@@ -252,17 +252,91 @@ function friendRow(f) {
   return row;
 }
 
+// Known speakers get a signature colour; the dev (Banana) gets molten flair.
+const SPEAKERS = {
+  Vex: { color: "#6fd9ff" },
+  Reaper: { color: "#ff8f6b" },
+  Sable: { color: "#c8a97a" },
+  Banana: { color: "#ffb45e", dev: true },
+};
+const NAME_PALETTE = ["#6fd9ff", "#7dff5a", "#ff8f6b", "#ffd36b", "#c77dff", "#52ffa8"];
+
+function speakerColor(name) {
+  if (SPEAKERS[name]) return SPEAKERS[name].color;
+  let h = 0;
+  for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return NAME_PALETTE[h % NAME_PALETTE.length];
+}
+
+function initials(name) {
+  const parts = name.trim().split(/\s+/);
+  return (parts.length > 1 ? parts[0][0] + parts[1][0] : name.slice(0, 2)).toUpperCase();
+}
+
+function clockNow() {
+  return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+}
+
+let lastFrom = null;
+
 function say(text, from = "") {
   const box = $("soc-msgs");
   if (!box) return;
-  const line = document.createElement("div");
-  line.className = "soc-msg" + (from ? "" : " sys");
-  if (from) {
-    const who = document.createElement("b");
-    who.textContent = from + " ";
-    line.append(who);
+
+  if (!from) {
+    lastFrom = null;
+    const sys = document.createElement("div");
+    sys.className = "soc-msg sys";
+    const inner = document.createElement("span");
+    inner.textContent = text;
+    sys.append(inner);
+    box.append(sys);
+    box.scrollTop = box.scrollHeight;
+    return;
   }
-  line.append(document.createTextNode(text));
+
+  const self = from === OPERATOR;
+  const grouped = from === lastFrom;
+  lastFrom = from;
+
+  const line = document.createElement("div");
+  line.className = "soc-msg" + (self ? " self" : " other") + (grouped ? " grouped" : "");
+
+  const av = document.createElement("span");
+  av.className = "soc-av";
+  av.style.setProperty("--c", self ? "#35d07f" : speakerColor(from));
+  av.textContent = initials(from);
+  line.append(av);
+
+  const bubble = document.createElement("div");
+  bubble.className = "soc-bubble";
+
+  if (!grouped) {
+    const meta = document.createElement("div");
+    meta.className = "soc-meta";
+    const isDev = SPEAKERS[from]?.dev;
+    if (isDev) {
+      const chip = document.createElement("span");
+      chip.className = "dev-chip";
+      chip.textContent = "DEV";
+      meta.append(chip);
+    }
+    const who = document.createElement("b");
+    who.className = "name" + (isDev ? " dev-name" : "");
+    if (!isDev) who.style.color = self ? "#35d07f" : speakerColor(from);
+    who.textContent = from;
+    const time = document.createElement("time");
+    time.textContent = clockNow();
+    meta.append(who, time);
+    bubble.append(meta);
+  }
+
+  const body = document.createElement("div");
+  body.className = "soc-text";
+  body.textContent = text;
+  bubble.append(body);
+
+  line.append(bubble);
   box.append(line);
   box.scrollTop = box.scrollHeight;
 }

@@ -1982,46 +1982,109 @@
         flex: 1;
         overflow-y: auto;
         text-align: left;
-        padding: 10px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        padding: 12px 14px;
         border-top: 1px solid rgba(255, 178, 92, 0.14);
-        font: 500 15.5px var(--hud-font);
-        letter-spacing: 0.03em;
         scrollbar-width: thin;
         scrollbar-color: rgba(247, 148, 34, 0.35) transparent;
       }
-      .soc-msgs .m { margin: 3px 0; color: var(--tx); overflow-wrap: anywhere; }
+      /* chat rows: avatar + forged bubble, self-aligned right */
+      .soc-msg {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        max-width: 84%;
+        animation: soc-msg-in 0.28s ease;
+      }
+      @keyframes soc-msg-in {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: none; }
+      }
+      .soc-msg.self { flex-direction: row-reverse; align-self: flex-end; }
+      .soc-msg.grouped { margin-top: -1px; }
+      .soc-av {
+        flex: none;
+        width: 32px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        border-radius: 9px;
+        border: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
+        background: linear-gradient(180deg, color-mix(in srgb, var(--c) 24%, #16171b), #0e0f12);
+        color: var(--c);
+        font: 800 11px var(--hud-font);
+        letter-spacing: 0.04em;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
+      .soc-msg.grouped .soc-av { visibility: hidden; height: 0; margin-top: -4px; }
+      .soc-bubble {
+        position: relative;
+        padding: 7px 12px 8px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 4px 12px 12px 12px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+        min-width: 0;
+      }
+      .soc-msg.self .soc-bubble {
+        border-radius: 12px 4px 12px 12px;
+        border-color: rgba(53, 208, 127, 0.28);
+        background: linear-gradient(180deg, rgba(53, 208, 127, 0.12), rgba(53, 208, 127, 0.04));
+      }
+      .soc-msg.grouped .soc-bubble { border-radius: 12px; }
+      .soc-meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 3px; }
+      .soc-msg.self .soc-meta { flex-direction: row-reverse; }
+      .soc-meta .name { font: 700 12.5px var(--hud-font); letter-spacing: 0.03em; }
+      .soc-meta time {
+        font: 600 9.5px var(--hud-font);
+        letter-spacing: 0.08em;
+        color: var(--tx2);
+        opacity: 0.7;
+      }
+      .soc-text {
+        font: 500 14.5px var(--hud-font);
+        line-height: 1.45;
+        letter-spacing: 0.02em;
+        color: var(--tx);
+        overflow-wrap: anywhere;
+      }
       /* dev flair: molten-gradient name + forged DEV chip */
-      .soc-msgs .m b.dev-name {
+      .soc-meta .name.dev-name {
         background: linear-gradient(90deg, #ffb45e, #fff3df, #ff7a1a, #ffb45e);
         background-size: 300% 100%;
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
         animation: dev-molten 3.5s linear infinite;
-        text-shadow: none;
         filter: drop-shadow(0 0 6px rgba(247, 148, 34, 0.5));
       }
       @keyframes dev-molten {
         from { background-position: 0% 0; }
         to { background-position: 300% 0; }
       }
-      .soc-msgs .m .dev-chip {
-        display: inline-block;
-        margin-right: 7px;
+      .soc-meta .dev-chip {
         padding: 1px 6px 1.5px;
         border-radius: 4px;
         border: 1px solid rgba(255, 178, 92, 0.55);
         background: linear-gradient(180deg, rgba(64, 42, 18, 0.9), rgba(28, 19, 11, 0.95));
         font: 800 8.5px var(--hud-font);
-        font-style: normal;
         letter-spacing: 0.22em;
         color: #ffc073;
         text-shadow: 0 0 8px rgba(247, 148, 34, 0.6);
-        vertical-align: 1px;
       }
-      .soc-msgs .m b { color: var(--copper); font-weight: 700; margin-right: 7px; }
-      .soc-msgs .m.self b { color: #35d07f; }
-      .soc-msgs .m.sys { color: var(--tx2); font-style: italic; }
+      .soc-msg.sys {
+        max-width: 100%;
+        align-self: center;
+        padding: 3px 12px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--tx2);
+        font: 500 11.5px var(--hud-font);
+        font-style: italic;
+        letter-spacing: 0.04em;
+        text-align: center;
+      }
       .soc-input {
         display: flex;
         gap: 8px;
