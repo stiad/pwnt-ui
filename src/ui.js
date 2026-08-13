@@ -268,11 +268,6 @@ function speakerColor(name) {
   return NAME_PALETTE[h % NAME_PALETTE.length];
 }
 
-function initials(name) {
-  const parts = name.trim().split(/\s+/);
-  return (parts.length > 1 ? parts[0][0] + parts[1][0] : name.slice(0, 2)).toUpperCase();
-}
-
 function clockNow() {
   return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
 }
@@ -296,47 +291,34 @@ function say(text, from = "") {
   }
 
   const self = from === OPERATOR;
-  const grouped = from === lastFrom;
   lastFrom = from;
+  const isDev = SPEAKERS[from]?.dev;
 
   const line = document.createElement("div");
-  line.className = "soc-msg" + (self ? " self" : " other") + (grouped ? " grouped" : "");
+  line.className = "soc-msg" + (self ? " self" : " other");
 
-  const av = document.createElement("span");
-  av.className = "soc-av";
-  av.style.setProperty("--c", self ? "#35d07f" : speakerColor(from));
-  av.textContent = initials(from);
-  line.append(av);
+  const time = document.createElement("time");
+  time.textContent = clockNow();
+  line.append(time);
 
-  const bubble = document.createElement("div");
-  bubble.className = "soc-bubble";
-
-  if (!grouped) {
-    const meta = document.createElement("div");
-    meta.className = "soc-meta";
-    const isDev = SPEAKERS[from]?.dev;
-    if (isDev) {
-      const chip = document.createElement("span");
-      chip.className = "dev-chip";
-      chip.textContent = "DEV";
-      meta.append(chip);
-    }
-    const who = document.createElement("b");
-    who.className = "name" + (isDev ? " dev-name" : "");
-    if (!isDev) who.style.color = self ? "#35d07f" : speakerColor(from);
-    who.textContent = from;
-    const time = document.createElement("time");
-    time.textContent = clockNow();
-    meta.append(who, time);
-    bubble.append(meta);
+  if (isDev) {
+    const chip = document.createElement("span");
+    chip.className = "dev-chip";
+    chip.textContent = "DEV";
+    line.append(chip);
   }
 
-  const body = document.createElement("div");
+  const who = document.createElement("b");
+  who.className = "name" + (isDev ? " dev-name" : "");
+  if (!isDev) who.style.color = self ? "#35d07f" : speakerColor(from);
+  who.textContent = from;
+  line.append(who);
+
+  const body = document.createElement("span");
   body.className = "soc-text";
   body.textContent = text;
-  bubble.append(body);
+  line.append(body);
 
-  line.append(bubble);
   box.append(line);
   box.scrollTop = box.scrollHeight;
 }
