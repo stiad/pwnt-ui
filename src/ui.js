@@ -63,22 +63,78 @@ const CLS_SIL = [
 ];
 const CLS_NAME = ["ASSAULT", "SNIPER", "SMG", "SHOTGUN"];
 
-const SHOP = [
-  { id: "tracer_glacier", kind: "tracer", name: "Glacier", hex: "#6fd9ff", cost: 150 },
-  { id: "tracer_toxin", kind: "tracer", name: "Toxin", hex: "#7dff5a", cost: 150 },
-  { id: "tracer_hellfire", kind: "tracer", name: "Hellfire", hex: "#ff4d3d", cost: 200 },
-  { id: "tracer_voltage", kind: "tracer", name: "Voltage", hex: "#c77dff", cost: 200 },
-  { id: "tracer_goldrush", kind: "tracer", name: "Goldrush", hex: "#ffd36b", cost: 250 },
-  { id: "ward_ember", kind: "ward", name: "Ember", hex: "#ffb457", cost: 175 },
-  { id: "ward_emerald", kind: "ward", name: "Emerald", hex: "#52ffa8", cost: 175 },
-  { id: "ward_crimson", kind: "ward", name: "Crimson", hex: "#ff5d57", cost: 300 },
-  { id: "gear_ash", kind: "gear", name: "Ash", hex: "#8d9299", cost: 200 },
-  { id: "gear_sand", kind: "gear", name: "Sand", hex: "#c8a97a", cost: 200 },
-  { id: "gear_arctic", kind: "gear", name: "Arctic", hex: "#dfe7ef", cost: 250 },
-  { id: "name_gold", kind: "name", name: "Gold", hex: "#ffd36b", cost: 200 },
+// Mirrors SHOP_CATALOG in the real client: id/kind/name/hex/price/tier.
+// `hex` is a colour for most kinds but a DECAL TOKEN for patches, which is
+// why patch previews load /images/patch_<hex>.webp.
+const SHOP_CATALOG = [
+  { id: "tracer_glacier", kind: "tracer", name: "Glacier", hex: "#6fd9ff", price: 150, tier: "common" },
+  { id: "tracer_toxin", kind: "tracer", name: "Toxin", hex: "#7dff5a", price: 150, tier: "common" },
+  { id: "tracer_hellfire", kind: "tracer", name: "Hellfire", hex: "#ff4d3d", price: 200, tier: "rare" },
+  { id: "tracer_voltage", kind: "tracer", name: "Voltage", hex: "#c77dff", price: 200, tier: "rare" },
+  { id: "tracer_abyss", kind: "tracer", name: "Abyss", hex: "#3d5aff", price: 200, tier: "rare" },
+  { id: "tracer_goldrush", kind: "tracer", name: "Goldrush", hex: "#ffd36b", price: 250, tier: "epic" },
+  { id: "tracer_whiteout", kind: "tracer", name: "Whiteout", hex: "#f2f6ff", price: 250, tier: "epic" },
+  { id: "ward_ember", kind: "ward", name: "Ember", hex: "#ffb457", price: 175, tier: "common" },
+  { id: "ward_emerald", kind: "ward", name: "Emerald", hex: "#52ffa8", price: 175, tier: "common" },
+  { id: "ward_void", kind: "ward", name: "Void", hex: "#8a2be2", price: 175, tier: "common" },
+  { id: "ward_gold", kind: "ward", name: "Gold", hex: "#ffd36b", price: 250, tier: "epic" },
+  { id: "ward_crimson", kind: "ward", name: "Crimson", hex: "#ff5d57", price: 300, tier: "legendary" },
+  { id: "name_copper", kind: "name", name: "Copper", hex: "#f79422", price: 100, tier: "common" },
+  { id: "name_ice", kind: "name", name: "Ice", hex: "#6fd9ff", price: 100, tier: "common" },
+  { id: "name_toxin", kind: "name", name: "Toxin", hex: "#7dff5a", price: 100, tier: "common" },
+  { id: "name_gold", kind: "name", name: "Gold", hex: "#ffd36b", price: 200, tier: "epic" },
+  { id: "gear_ash", kind: "gear", name: "Ash", hex: "#8d9299", price: 200, tier: "common" },
+  { id: "gear_sand", kind: "gear", name: "Sand", hex: "#c8a97a", price: 200, tier: "common" },
+  { id: "gear_forest", kind: "gear", name: "Forest", hex: "#5c7a52", price: 200, tier: "common" },
+  { id: "gear_arctic", kind: "gear", name: "Arctic", hex: "#dfe7ef", price: 250, tier: "rare" },
+  { id: "gear_crimson", kind: "gear", name: "Crimson", hex: "#a33c33", price: 300, tier: "epic" },
+  { id: "gear_midnight", kind: "gear", name: "Midnight", hex: "#39415c", price: 300, tier: "epic" },
+  { id: "patch_usa", kind: "patch", name: "United States", hex: "usa", price: 150, tier: "common" },
+  { id: "patch_uk", kind: "patch", name: "United Kingdom", hex: "uk", price: 150, tier: "common" },
+  { id: "patch_france", kind: "patch", name: "France", hex: "france", price: 150, tier: "common" },
+  { id: "patch_germany", kind: "patch", name: "Germany", hex: "germany", price: 150, tier: "common" },
+  { id: "patch_russia", kind: "patch", name: "Russia", hex: "russia", price: 150, tier: "common" },
+  { id: "patch_china", kind: "patch", name: "China", hex: "china", price: 150, tier: "common" },
+  { id: "patch_australia", kind: "patch", name: "Australia", hex: "australia", price: 150, tier: "common" },
 ];
 
-const OWNED = new Set(["tracer_glacier", "ward_ember", "gear_ash"]);
+// Free starting kit — always in the stash, never in the shop.
+const SHOP_DEFAULTS = [
+  { id: "tracer_default", kind: "tracer", name: "Ember", hex: "#ffb457", price: 0, tier: "" },
+  { id: "ward_default", kind: "ward", name: "Frost", hex: "#78ebff", price: 0, tier: "" },
+  { id: "name_default", kind: "name", name: "Steel", hex: "#e9f1f7", price: 0, tier: "" },
+];
+
+const KINDS = [
+  ["tracer", "TRACERS"],
+  ["ward", "SPAWN WARDS"],
+  ["name", "CALLSIGNS"],
+  ["gear", "OPERATOR GEAR"],
+  ["patch", "PATCHES"],
+];
+const KIND_LABEL = { tracer: "tracer", ward: "spawn ward", name: "callsign" };
+const SHOP_PITCH = {
+  tracer: "every shot you fire is signed — the whole lobby watches YOUR colour cut the air",
+  ward: "spawn like you mean it — your shield, your colour, their warning",
+  name: "own the killfeed — callsign colours that make every frag read louder",
+  gear: "paint your operator — kit colours everyone reads across the map",
+  patch: "fly your colours — a shoulder patch every corpse gets a good look at",
+  stacks: "fuel the armory — bigger packs carry a bonus",
+};
+const STACK_PACKS = [
+  { id: "pk_pocket", name: "Pocket Stack", stacks: 500, bonus: 0, usd: 4.99, tag: "STARTER", line: "dip a toe in" },
+  { id: "pk_crate", name: "Supply Crate", stacks: 1100, bonus: 10, usd: 9.99, tag: "MOST POPULAR", line: "the crowd favourite" },
+  { id: "pk_vault", name: "Vault", stacks: 2400, bonus: 20, usd: 19.99, tag: "", line: "serious kit money" },
+  { id: "pk_lode", name: "Motherlode", stacks: 6500, bonus: 30, usd: 49.99, tag: "BEST VALUE", line: "never count stacks again" },
+];
+const TIER_ORDER = { legendary: 0, epic: 1, rare: 2, common: 3, "": 4 };
+const byRarity = (a, b) =>
+  (TIER_ORDER[a.tier] ?? 9) - (TIER_ORDER[b.tier] ?? 9) || a.price - b.price;
+
+let owned = ["tracer_glacier", "ward_ember", "gear_ash"];
+let equip = { tracer: "tracer_glacier" };
+let shopCat = "tracer";
+let stashCat = "tracer";
 let stacks = 1450;
 
 // ------------------------------------------------------------------- header
@@ -336,61 +392,229 @@ function setupBoardControls() {
 
 // ---------------------------------------------------------------- shop/stash
 
-function card(item, owned) {
+// preview(): each kind renders a different swatch element, and the stylesheet
+// draws them — a tracer is a .streak, a ward an .orb, a callsign coloured
+// text, gear a tinted portrait, a patch a decal image.
+function preview(kind, hex) {
+  const prev = document.createElement("div");
+  prev.className = "shop-prev";
+  if (kind === "patch") {
+    const el = document.createElement("div");
+    el.className = "patch-prev";
+    const img = document.createElement("img");
+    img.src = `/images/patch_${hex}.webp`;
+    img.alt = "";
+    el.append(img);
+    prev.append(el);
+    return prev;
+  }
+  if (kind === "gear") {
+    const el = document.createElement("div");
+    el.className = "gear-prev";
+    el.style.setProperty("--c", hex);
+    const img = document.createElement("img");
+    img.src = "/images/op-portrait.webp";
+    img.alt = "";
+    el.append(img);
+    prev.append(el);
+    return prev;
+  }
+  if (kind === "name") {
+    const el = document.createElement("div");
+    el.className = "callsign";
+    el.style.setProperty("--c", hex);
+    el.textContent = OPERATOR;
+    prev.append(el);
+    return prev;
+  }
+  const el = document.createElement("div");
+  el.className = kind === "tracer" ? "streak" : "orb";
+  el.style.setProperty("--c", hex);
+  prev.append(el);
+  return prev;
+}
+
+function card(item, inStash) {
+  const isEquipped =
+    equip[item.kind] === item.id || (item.id.endsWith("_default") && !equip[item.kind]);
   const c = document.createElement("div");
-  c.className = "shop-card" + (owned ? " owned" : "");
-  const sw = document.createElement("div");
-  sw.className = "shop-swatch";
-  sw.style.background = item.hex;
+  c.className =
+    "shop-card" + (isEquipped ? " equipped" : "") + (item.tier ? ` tier-${item.tier}` : "");
+  if (item.tier) {
+    const tag = document.createElement("span");
+    tag.className = "tier-tag";
+    tag.textContent = item.tier.toUpperCase();
+    c.append(tag);
+  }
+  c.append(preview(item.kind, item.hex));
   const nm = document.createElement("div");
   nm.className = "shop-name";
   nm.textContent = item.name;
-  const kind = document.createElement("div");
-  kind.className = "shop-kind";
-  kind.textContent = item.kind.toUpperCase();
+  const kd_ = document.createElement("div");
+  kd_.className = "shop-kind";
+  kd_.textContent = KIND_LABEL[item.kind] ?? item.kind;
+  c.append(nm, kd_);
+  const has = owned.includes(item.id) || item.id.endsWith("_default");
+  if (!inStash) {
+    const price = document.createElement("div");
+    price.className = "shop-price";
+    const icon = document.createElement("img");
+    icon.src = "/images/stacks-web.webp";
+    icon.alt = "stacks";
+    price.append(icon, String(item.price));
+    c.append(price);
+  }
   const btn = document.createElement("button");
   btn.type = "button";
-  btn.className = "shop-buy";
-  btn.textContent = owned ? "OWNED" : `${item.cost}`;
-  btn.disabled = owned;
-  on(btn, "click", () => {
-    if (stacks < item.cost) return say("not enough stacks (offline shell)");
-    stacks -= item.cost;
-    OWNED.add(item.id);
-    paintHeader();
-    paintShop();
-    paintStash();
-  });
-  c.append(sw, nm, kind, btn);
+  btn.className = "shop-btn";
+  if (isEquipped) {
+    btn.classList.add("eq");
+    btn.textContent = "EQUIPPED";
+  } else if (has) {
+    btn.classList.add("own");
+    btn.textContent = "EQUIP";
+    on(btn, "click", () => {
+      equip[item.kind] = item.id;
+      renderShop();
+    });
+  } else {
+    btn.textContent = "BUY";
+    on(btn, "click", () => {
+      if (stacks < item.price) {
+        btn.classList.add("err");
+        btn.textContent = "NOT ENOUGH";
+        setTimeout(renderShop, 1400);
+        return;
+      }
+      stacks -= item.price;
+      owned = [...owned, item.id];
+      equip[item.kind] = item.id;
+      paintHeader();
+      renderShop();
+    });
+  }
+  c.append(btn);
+  if (!has) c.dataset.item = item.id;
   return c;
 }
 
-function paintShop() {
-  const shop = $("shop-grid");
-  if (!shop) return;
-  shop.textContent = "";
-  const grid = document.createElement("div");
-  grid.className = "shop-grid";
-  for (const item of SHOP) grid.append(card(item, OWNED.has(item.id)));
-  shop.append(grid);
+function chipRow(active, counts, pick) {
+  const row = document.createElement("div");
+  row.className = "mm-modesel shop-cats";
+  for (const [kind, label] of KINDS) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.classList.add(`chip-${kind}`);
+    b.classList.toggle("on", kind === active);
+    b.textContent = label;
+    const n = counts.get(kind) ?? 0;
+    if (n) {
+      const i = document.createElement("i");
+      i.className = "cat-n";
+      i.textContent = String(n);
+      b.append(i);
+    }
+    on(b, "click", () => pick(kind));
+    row.append(b);
+  }
+  return row;
 }
 
-function paintStash() {
-  const grid = $("stash-grid");
-  if (!grid) return;
-  grid.textContent = "";
-  const owned = SHOP.filter((i) => OWNED.has(i.id));
-  if (!owned.length) {
-    const empty = document.createElement("div");
-    empty.className = "mm-empty-sub";
-    empty.textContent = "nothing owned yet — buy something in the armory";
-    grid.append(empty);
-    return;
+function stackCard(pk) {
+  const c = document.createElement("div");
+  c.className = `shop-card stack-pack ${pk.id}`;
+  if (pk.tag) {
+    const tag = document.createElement("div");
+    tag.className = "sp-tag" + (pk.tag === "BEST VALUE" ? " best" : "");
+    tag.textContent = pk.tag;
+    c.append(tag);
   }
-  const wrap = document.createElement("div");
-  wrap.className = "shop-grid";
-  for (const item of owned) wrap.append(card(item, true));
-  grid.append(wrap);
+  const img = document.createElement("img");
+  img.src = "/images/stacks-web.webp";
+  img.alt = "";
+  img.className = "sp-icon";
+  const nm = document.createElement("div");
+  nm.className = "shop-name";
+  nm.textContent = pk.name;
+  const amt = document.createElement("div");
+  amt.className = "sp-amt";
+  amt.textContent = pk.stacks.toLocaleString();
+  const sub = document.createElement("div");
+  sub.className = "sp-bonus";
+  sub.textContent = pk.bonus ? `+${pk.bonus}% BONUS` : " ";
+  const line = document.createElement("div");
+  line.className = "sp-line";
+  line.textContent = pk.line;
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "shop-btn";
+  btn.textContent = `$${pk.usd.toFixed(2)}`;
+  on(btn, "click", () => {
+    btn.textContent = "AFTER ALPHA";
+    setTimeout(() => { btn.textContent = `$${pk.usd.toFixed(2)}`; }, 1400);
+  });
+  c.append(img, nm, amt, sub, line, btn);
+  return c;
+}
+
+// One render for both panes, same as the real client's render().
+function renderShop() {
+  const shop = $("shop-grid");
+  if (shop) {
+    shop.textContent = "";
+    const sub = document.querySelector("#mm-shop .mm-pane-sub");
+    if (sub) sub.textContent = SHOP_PITCH[shopCat] ?? "";
+
+    const banner = document.createElement("div");
+    banner.id = "stacks-banner";
+    banner.classList.toggle("live", shopCat === "stacks");
+    const bIcon = document.createElement("img");
+    bIcon.src = "/images/stacks-web.webp";
+    bIcon.alt = "";
+    const bText = document.createElement("div");
+    bText.className = "sb-text";
+    const bTitle = document.createElement("b");
+    bTitle.textContent = "GET STACKS";
+    const bSub = document.createElement("span");
+    bSub.textContent = "fuel the armory — up to +30% bonus on bigger packs";
+    bText.append(bTitle, bSub);
+    const bCta = document.createElement("span");
+    bCta.className = "sb-cta";
+    bCta.textContent = shopCat === "stacks" ? "PICK A PACK" : "SHOP PACKS →";
+    banner.append(bIcon, bText, bCta);
+    on(banner, "click", () => { shopCat = "stacks"; renderShop(); });
+    shop.append(banner);
+
+    const counts = new Map(
+      KINDS.map(([k]) => [k, SHOP_CATALOG.filter((i) => i.kind === k).length]),
+    );
+    shop.append(chipRow(shopCat, counts, (k) => { shopCat = k; renderShop(); }));
+    const grid = document.createElement("div");
+    grid.className = "shop-grid";
+    if (shopCat === "stacks") {
+      for (const pk of STACK_PACKS) grid.append(stackCard(pk));
+    } else {
+      for (const item of SHOP_CATALOG.filter((i) => i.kind === shopCat).sort(byRarity)) {
+        grid.append(card(item, false));
+      }
+    }
+    shop.append(grid);
+  }
+
+  const stash = $("stash-grid");
+  if (stash) {
+    stash.textContent = "";
+    const stashItems = (kind) => [
+      ...SHOP_DEFAULTS.filter((i) => i.kind === kind),
+      ...owned.map((id) => SHOP_CATALOG.find((i) => i.id === id)).filter((i) => i && i.kind === kind),
+    ];
+    const counts = new Map(KINDS.map(([k]) => [k, stashItems(k).length]));
+    stash.append(chipRow(stashCat, counts, (k) => { stashCat = k; renderShop(); }));
+    const grid = document.createElement("div");
+    grid.className = "shop-grid";
+    for (const item of stashItems(stashCat).sort(byRarity)) grid.append(card(item, true));
+    stash.append(grid);
+  }
 }
 
 // ------------------------------------------------------------------ settings
@@ -488,8 +712,7 @@ function boot() {
   paintHeader();
   paintBoard();
   setupBoardControls();
-  paintShop();
-  paintStash();
+  renderShop();
   // The inline guard in index.html sets .tomenu when credentials are saved.
   if (document.documentElement.classList.contains("tomenu")) openMenu();
   // Nothing renders into #app in this build; drop the game canvas hole.
