@@ -702,6 +702,7 @@ function setupAmbient() {
   let W = 0, H = 0, dpr = 1;
   let embers = [];
   let glows = [];
+  let smoke = [];
 
   const rand = (a, b) => a + Math.random() * (b - a);
 
@@ -717,6 +718,20 @@ function setupAmbient() {
     life: rand(1.1, 3.2),    // short so they flare up and fade out fast
     age: seed ? rand(0, 2) : 0,
     hot: Math.random() < 0.28, // brighter, whiter sparks
+  });
+
+  const makeSmoke = (seed = false) => ({
+    x: rand(0, W),
+    y: seed ? rand(0, H) : H + rand(20, 90),
+    r: rand(60, 130),          // starting radius — it swells as it climbs
+    grow: rand(30, 70),        // px/sec the puff expands
+    vy: rand(35, 70),          // slow lazy rise
+    vx: rand(-18, 18),
+    drift: rand(10, 26),       // sideways wander strength
+    phase: rand(0, Math.PI * 2),
+    sway: rand(0.3, 0.7),      // wander speed
+    life: rand(6, 11),         // long-lived so it fades gently
+    age: seed ? rand(0, 5) : 0,
   });
 
   const makeGlow = () => ({
@@ -744,6 +759,26 @@ function setupAmbient() {
     const emberCount = Math.round(Math.min(24, (W * H) / 80000));
     embers = Array.from({ length: emberCount }, () => makeEmber(true));
     glows = Array.from({ length: 5 }, makeGlow);
+    const smokeCount = Math.round(Math.min(10, (W * H) / 200000));
+    smoke = Array.from({ length: smokeCount }, () => makeSmoke(true));
+  };
+
+  const drawSmoke = (t) => {
+    ctx.globalCompositeOperation = "source-over";
+    for (const s of smoke) {
+      const fade = Math.min(1, s.age / 1.5) * Math.max(0, 1 - s.age / s.life);
+      const a = fade * 0.06;
+      if (a <= 0) continue;
+      const wob = Math.sin(t * s.sway + s.phase) * s.drift;
+      const grad = ctx.createRadialGradient(s.x + wob, s.y, 0, s.x + wob, s.y, s.r);
+      grad.addColorStop(0, `rgba(70, 58, 52, ${a})`);
+      grad.addColorStop(0.6, `rgba(45, 38, 36, ${a * 0.5})`);
+      grad.addColorStop(1, "rgba(25, 22, 22, 0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(s.x + wob, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
   };
 
   const drawGlows = (t) => {
@@ -803,6 +838,15 @@ function setupAmbient() {
 
     if (active) {
       ctx.clearRect(0, 0, W, H);
+      drawSmoke(t);
+      for (const s of smoke) {
+        s.age += dt;
+        s.x += s.vx * dt;
+        s.y -= s.vy * dt;
+        s.r += s.grow * dt;
+        if (s.age >= s.life || s.y + s.r < -20)
+          Object.assign(s, makeSmoke(false));
+      }
       drawGlows(t);
       ctx.globalCompositeOperation = "lighter";
       for (const g of glows) {
@@ -833,6 +877,7 @@ function setupAmbient() {
       resize();
       if (W === 0 || H === 0) return;
       ctx.clearRect(0, 0, W, H);
+      drawSmoke(0);
       drawGlows(0);
       for (const e of embers) drawEmber(e, 0);
       ctx.globalCompositeOperation = "source-over";
