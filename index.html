@@ -1102,6 +1102,62 @@
       .mm-body:has(> #mm-play.on)::before,
       .mm-body:has(> #mm-social.on)::before { flex: 0; }
       .mm-pane.on { display: block; animation: tp-fade 0.25s ease both; }
+
+      /* Tab-switch choreography: the pane fades in, then its blocks rise and
+         settle in a quick cascade so each tab feels assembled, not dumped. */
+      @keyframes mm-rise {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: none; }
+      }
+      .mm-pane.on > * { animation: mm-rise 0.42s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+      .mm-pane.on > *:nth-child(1) { animation-delay: 0.04s; }
+      .mm-pane.on > *:nth-child(2) { animation-delay: 0.10s; }
+      .mm-pane.on > *:nth-child(3) { animation-delay: 0.16s; }
+      .mm-pane.on > *:nth-child(4) { animation-delay: 0.22s; }
+      .mm-pane.on > *:nth-child(5) { animation-delay: 0.28s; }
+      .mm-pane.on > *:nth-child(n + 6) { animation-delay: 0.32s; }
+
+      /* The armory/stash wrappers hold their place; their tiles fan in one
+         after another so the grid assembles itself. This replays whenever the
+         category chips rebuild the grid, too. */
+      .mm-pane.on > #shop-grid,
+      .mm-pane.on > #stash-grid { animation: none; }
+      .mm-pane.on .shop-grid > * { animation: mm-rise 0.4s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+      .mm-pane.on .shop-grid > *:nth-child(1) { animation-delay: 0.04s; }
+      .mm-pane.on .shop-grid > *:nth-child(2) { animation-delay: 0.09s; }
+      .mm-pane.on .shop-grid > *:nth-child(3) { animation-delay: 0.14s; }
+      .mm-pane.on .shop-grid > *:nth-child(4) { animation-delay: 0.19s; }
+      .mm-pane.on .shop-grid > *:nth-child(5) { animation-delay: 0.24s; }
+      .mm-pane.on .shop-grid > *:nth-child(6) { animation-delay: 0.29s; }
+      .mm-pane.on .shop-grid > *:nth-child(7) { animation-delay: 0.34s; }
+      .mm-pane.on .shop-grid > *:nth-child(8) { animation-delay: 0.39s; }
+      .mm-pane.on .shop-grid > *:nth-child(n + 9) { animation-delay: 0.44s; }
+
+      /* Leaderboard table rows drop in from the top down. */
+      .mm-pane.on #mm-lb-rows > .mm-lb-row { animation: mm-rise 0.38s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+      .mm-pane.on #mm-lb-rows > .mm-lb-row:nth-child(2) { animation-delay: 0.14s; }
+      .mm-pane.on #mm-lb-rows > .mm-lb-row:nth-child(3) { animation-delay: 0.19s; }
+      .mm-pane.on #mm-lb-rows > .mm-lb-row:nth-child(4) { animation-delay: 0.24s; }
+      .mm-pane.on #mm-lb-rows > .mm-lb-row:nth-child(5) { animation-delay: 0.29s; }
+      .mm-pane.on #mm-lb-rows > .mm-lb-row:nth-child(6) { animation-delay: 0.34s; }
+      .mm-pane.on #mm-lb-rows > .mm-lb-row:nth-child(n + 7) { animation-delay: 0.38s; }
+
+      /* Title underline draws itself out from the centre as the pane opens. */
+      @keyframes mm-underline {
+        from { transform: scaleX(0); opacity: 0; }
+        to   { transform: scaleX(1); opacity: 1; }
+      }
+      .mm-pane.on .mm-pane-head::after {
+        transform-origin: center;
+        animation: mm-underline 0.55s ease 0.18s both;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .mm-pane.on > *,
+        .mm-pane.on .shop-grid > *,
+        .mm-pane.on #mm-lb-rows > .mm-lb-row,
+        .mm-pane.on .mm-pane-head::after { animation: none; }
+      }
       /* Play: mode cards */
       .mm-modes { display: flex; gap: 22px; flex-wrap: wrap; justify-content: center; }
       .mm-mode {
@@ -1976,8 +2032,19 @@
         background: #5a6675;
         flex: none;
       }
-      .soc-friend.online .dot { background: #35d07f; box-shadow: 0 0 8px rgba(53, 208, 127, 0.7); }
-      .soc-friend.ingame .dot { background: var(--copper); box-shadow: 0 0 8px rgba(247, 148, 34, 0.7); }
+      .soc-friend.online .dot { background: #35d07f; box-shadow: 0 0 8px rgba(53, 208, 127, 0.7); animation: dot-live 2.4s ease-in-out infinite; }
+      .soc-friend.ingame .dot { background: var(--copper); box-shadow: 0 0 8px rgba(247, 148, 34, 0.7); animation: dot-ember 1.6s ease-in-out infinite; }
+      @keyframes dot-live {
+        0%, 100% { box-shadow: 0 0 6px rgba(53, 208, 127, 0.5); }
+        50% { box-shadow: 0 0 11px rgba(53, 208, 127, 0.95); }
+      }
+      @keyframes dot-ember {
+        0%, 100% { box-shadow: 0 0 6px rgba(247, 148, 34, 0.5); }
+        50% { box-shadow: 0 0 12px rgba(247, 148, 34, 1); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .soc-friend.online .dot, .soc-friend.ingame .dot { animation: none; }
+      }
       .soc-friend .fn { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
       .soc-friend .st { font-size: 10px; letter-spacing: 0.14em; color: var(--tx2); text-transform: uppercase; }
       .soc-friend .fbtn, .soc-preq .fbtn {
