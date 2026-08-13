@@ -715,7 +715,7 @@ function setupAmbient() {
     ax: rand(-130, 130),     // sideways accel — this is what bends the path
     phase: rand(0, Math.PI * 2),
     flick: rand(6, 13),      // flicker speed
-    life: rand(1.1, 3.2),    // short so they flare up and fade out fast
+    life: rand(0.7, 2.1),    // short so they flare up and fade out fast
     age: seed ? rand(0, 2) : 0,
     hot: Math.random() < 0.28, // brighter, whiter sparks
   });
