@@ -437,7 +437,7 @@ function paintBoard(rowsData = BOARD) {
     const pd = document.createElement("div");
     pd.className = `pd pd${i + 1}`;
     const card = document.createElement("div");
-    card.className = "pd-card";
+    card.className = "pd-card" + (r.name === OPERATOR ? " me" : "");
     const medal = document.createElement("div");
     medal.className = "pd-medal";
     if (i === 0) {
@@ -495,18 +495,44 @@ function paintBoard(rowsData = BOARD) {
 
   rest.forEach((r, j) => {
     const i = j + 3;
+    const me = r.name === OPERATOR;
     const row = document.createElement("div");
-    row.className = "mm-lb-row";
+    row.className = "mm-lb-row" + (me ? " me" : "");
+
+    const rank = document.createElement("div");
+    rank.className = "mm-lb-rank";
+    rank.textContent = `#${i + 1}`;
+    row.append(rank);
+
+    const op = document.createElement("div");
+    op.className = "mm-lb-op";
+    if (r.fav >= 0) {
+      const cls = document.createElement("span");
+      cls.className = "mm-lb-cls";
+      cls.style.setProperty("--sil", `url('${CLS_SIL[r.fav]}')`);
+      cls.title = CLS_NAME[r.fav];
+      op.append(cls);
+    }
+    const nm = document.createElement("span");
+    nm.className = "nm";
+    nm.textContent = r.name;
+    op.append(nm);
+    if (me) {
+      const you = document.createElement("span");
+      you.className = "mm-lb-you";
+      you.textContent = "YOU";
+      op.append(you);
+    }
+    row.append(op);
+
     for (const [cls, val] of [
-      ["mm-lb-rank", `#${i + 1}`],
-      ["", r.name],
       ["mm-lb-k", String(r.kills)],
       ["mm-lb-kd", kd(r)],
       ["mm-lb-w", String(r.wins)],
       ["mm-lb-hs", String(r.hs)],
     ]) {
       const c = document.createElement("div");
-      if (cls) c.className = cls;
+      c.className = cls;
       c.textContent = val;
       row.append(c);
     }

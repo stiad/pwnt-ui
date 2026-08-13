@@ -1570,119 +1570,207 @@
         height: 1px;
         background: linear-gradient(90deg, transparent, rgba(210, 225, 240, 0.35), transparent);
       }
+      /* ---- ladder table ---- */
       .mm-lb-row {
         display: grid;
-        grid-template-columns: 48px 1fr 84px 84px 84px 84px;
+        grid-template-columns: 56px minmax(0, 1fr) 88px 76px 76px 76px;
         align-items: center;
         gap: 10px;
-        padding: 10px 16px;
+        padding: 11px 18px;
         border-radius: 8px;
         font: 600 15px var(--hud-font);
-        letter-spacing: 0.05em;
+        letter-spacing: 0.04em;
+        font-variant-numeric: tabular-nums;
+        transition: background 0.16s, box-shadow 0.16s;
       }
       .mm-lb-row.hdr {
-        font: 600 10px var(--hud-font);
-        letter-spacing: 0.2em;
+        font: 700 10px var(--hud-font);
+        letter-spacing: 0.22em;
         text-transform: uppercase;
         color: var(--tx2);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 4px 18px 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 0;
-        margin-bottom: 2px;
+        margin-bottom: 4px;
       }
-      .mm-lb-row:not(.hdr):hover { background: rgba(255, 255, 255, 0.05); cursor: default; }
-      .mm-lb-row:not(.hdr):nth-child(odd) { background: rgba(255, 255, 255, 0.025); }
-      .mm-lb-row:not(.hdr):nth-child(odd):hover { background: rgba(255, 255, 255, 0.05); }
-      .mm-lb-rank { color: var(--tx2); font-weight: 700; }
-      /* Podium rows: gold / silver / bronze rank + a faint medal wash. */
-      .mm-lb-row.p1 .mm-lb-rank { color: #ffd36b; text-shadow: 0 0 12px rgba(255, 211, 107, 0.6); }
-      .mm-lb-row.p2 .mm-lb-rank { color: #cfd8e3; text-shadow: 0 0 10px rgba(207, 216, 227, 0.4); }
-      .mm-lb-row.p3 .mm-lb-rank { color: #d99a5b; text-shadow: 0 0 10px rgba(217, 154, 91, 0.45); }
-      .mm-lb-row.p1:not(.hdr) { background: linear-gradient(90deg, rgba(255, 211, 107, 0.1), transparent 65%); }
-      .mm-lb-row.p2:not(.hdr) { background: linear-gradient(90deg, rgba(207, 216, 227, 0.07), transparent 65%); }
-      .mm-lb-row.p3:not(.hdr) { background: linear-gradient(90deg, rgba(217, 154, 91, 0.08), transparent 65%); }
+      .mm-lb-row:not(.hdr) { position: relative; }
+      .mm-lb-row:not(.hdr):nth-child(odd) { background: rgba(255, 255, 255, 0.022); }
+      .mm-lb-row:not(.hdr):hover {
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+      }
+      /* rank chip */
+      .mm-lb-row:not(.hdr) .mm-lb-rank {
+        justify-self: start;
+        display: inline-grid;
+        place-items: center;
+        min-width: 36px;
+        height: 26px;
+        padding: 0 8px;
+        color: var(--tx2);
+        font-weight: 800;
+        background: rgba(255, 255, 255, 0.04);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09);
+        clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+      }
+      /* operator name cell: class icon + name (+ YOU tag) */
+      .mm-lb-op { display: flex; align-items: center; gap: 10px; min-width: 0; }
+      .mm-lb-op .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--tx); }
+      .mm-lb-cls {
+        flex: none;
+        width: 22px;
+        height: 16px;
+        background: var(--tx2);
+        opacity: 0.6;
+        -webkit-mask: var(--sil) center / contain no-repeat;
+        mask: var(--sil) center / contain no-repeat;
+      }
+      .mm-lb-you {
+        flex: none;
+        padding: 2px 8px;
+        font: 800 8.5px var(--hud-font);
+        letter-spacing: 0.18em;
+        color: var(--ui-ink);
+        background: var(--ui);
+        clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+      }
+      /* the operator's own row lit in copper */
+      .mm-lb-row.me:not(.hdr) {
+        background: linear-gradient(90deg, rgba(247, 148, 34, 0.16), rgba(247, 148, 34, 0.02) 62%);
+        box-shadow: inset 0 0 0 1px rgba(247, 148, 34, 0.4), inset 3px 0 0 var(--copper);
+      }
+      .mm-lb-row.me:not(.hdr):hover {
+        background: linear-gradient(90deg, rgba(247, 148, 34, 0.22), rgba(247, 148, 34, 0.04) 62%);
+      }
+      .mm-lb-row.me .mm-lb-rank {
+        color: var(--ui-hi);
+        background: rgba(247, 148, 34, 0.14);
+        box-shadow: inset 0 0 0 1px rgba(247, 148, 34, 0.55);
+      }
+      .mm-lb-row.me .mm-lb-cls { background: var(--copper); opacity: 0.9; }
       .mm-lb-k, .mm-lb-w, .mm-lb-hs, .mm-lb-kd { text-align: right; }
-      .mm-lb-w { color: #35d07f; }
-      .mm-lb-hs { color: #ffd36b; }
-      .mm-lb-kd { color: var(--tx); }
+      .mm-lb-row:not(.hdr) .mm-lb-k { color: var(--tx); font-weight: 700; }
+      .mm-lb-row:not(.hdr) .mm-lb-w { color: #35d07f; }
+      .mm-lb-row:not(.hdr) .mm-lb-hs { color: #ffd36b; }
+      .mm-lb-row:not(.hdr) .mm-lb-kd { color: var(--tx); }
       /* Top-3 podium: 2nd | 1st | 3rd on stepped plinths, each keyed off its
-         medal color (--pc). The champion's plinth is tallest and glows. */
+         medal color (--pc). The champion's plinth is tallest and breathes. */
       .mm-podium {
         display: flex;
         align-items: flex-end;
         justify-content: center;
-        gap: 16px;
-        padding: 14px 8px 0;
-        margin-bottom: 18px;
+        gap: 18px;
+        padding: 22px 8px 8px;
+        margin-bottom: 22px;
       }
-      .mm-podium .pd { width: clamp(210px, 17vw, 245px); display: flex; flex-direction: column; }
+      .mm-podium .pd { width: clamp(210px, 18vw, 256px); display: flex; flex-direction: column; }
       .pd1 { --pc: #ffd36b; }
       .pd2 { --pc: #cfd8e3; }
       .pd3 { --pc: #d99a5b; }
       .pd-card {
         position: relative;
-        padding: 12px 10px 11px;
+        padding: 16px 12px 15px;
         text-align: center;
-        border: 1px solid color-mix(in srgb, var(--pc) 32%, transparent);
-        border-bottom: none;
-        border-radius: 10px 10px 0 0;
+        clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%, 0 10px);
         background:
-          radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--pc) 16%, transparent), transparent 65%),
-          linear-gradient(180deg, rgba(24, 28, 33, 0.96), rgba(12, 14, 17, 0.96));
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+          radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--pc) 22%, transparent), transparent 62%),
+          linear-gradient(180deg, rgba(26, 30, 35, 0.96), rgba(12, 14, 17, 0.97));
+        box-shadow:
+          inset 0 0 0 1px color-mix(in srgb, var(--pc) 34%, transparent),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
+      .pd-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 14px;
+        right: 14px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--pc), transparent);
+        box-shadow: 0 0 12px color-mix(in srgb, var(--pc) 70%, transparent);
       }
       .pd1 .pd-card {
-        box-shadow: 0 0 30px color-mix(in srgb, var(--pc) 22%, transparent),
-          inset 0 1px 0 rgba(255, 255, 255, 0.09);
+        padding-top: 20px;
+        box-shadow:
+          inset 0 0 0 1px color-mix(in srgb, var(--pc) 48%, transparent),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        animation: pd-champ 3.4s ease-in-out infinite;
       }
+      @keyframes pd-champ {
+        0%, 100% { filter: drop-shadow(0 0 18px color-mix(in srgb, #ffd36b 20%, transparent)); }
+        50% { filter: drop-shadow(0 0 34px color-mix(in srgb, #ffd36b 42%, transparent)); }
+      }
+      .pd-card.me::after {
+        content: "YOU";
+        position: absolute;
+        top: 9px;
+        right: 9px;
+        padding: 2px 6px;
+        font: 800 8px var(--hud-font);
+        letter-spacing: 0.16em;
+        color: var(--ui-ink);
+        background: var(--ui);
+        clip-path: polygon(0 0, calc(100% - 3px) 0, 100% 3px, 100% 100%, 3px 100%, 0 calc(100% - 3px));
+      }
+      /* medal disc — laurel for the champion, rank digit for silver/bronze */
       .pd-medal {
-        height: 22px;
-        font: 800 15px var(--hud-font);
-        color: var(--pc);
-        text-shadow: 0 0 10px color-mix(in srgb, var(--pc) 60%, transparent);
+        width: 42px;
+        height: 42px;
+        margin: 0 auto 8px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        font: 800 17px var(--hud-font);
+        color: #16120a;
+        background: radial-gradient(circle at 50% 34%, color-mix(in srgb, var(--pc) 88%, #fff), var(--pc) 72%);
+        box-shadow:
+          0 0 16px color-mix(in srgb, var(--pc) 60%, transparent),
+          inset 0 -3px 6px rgba(0, 0, 0, 0.25),
+          inset 0 2px 3px rgba(255, 255, 255, 0.55);
       }
-      .pd-medal svg {
-        width: 26px;
-        height: 15px;
-        fill: var(--pc);
-        filter: drop-shadow(0 0 7px color-mix(in srgb, var(--pc) 65%, transparent));
-      }
+      .pd1 .pd-medal { width: 50px; height: 50px; }
+      .pd-medal svg { width: 28px; height: 17px; fill: #201400; filter: none; }
       .pd-sil {
-        width: 54px;
-        height: 32px;
-        margin: 4px auto 2px;
+        width: 60px;
+        height: 30px;
+        margin: 6px auto 4px;
         background: var(--pc);
-        opacity: 0.85;
+        opacity: 0.9;
         -webkit-mask: var(--sil) center / contain no-repeat;
         mask: var(--sil) center / contain no-repeat;
       }
       .pd-name {
-        margin-top: 4px;
-        font: 700 14px var(--hud-font);
-        letter-spacing: 0.08em;
+        margin-top: 2px;
+        font: 700 15px var(--hud-font);
+        letter-spacing: 0.06em;
         color: var(--tx);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      .pd-kills { margin-top: 3px; font: 600 10px var(--hud-font); letter-spacing: 0.18em; color: var(--tx2); }
-      .pd-kills b { font-size: 21px; letter-spacing: 0.02em; color: var(--pc); margin-right: 4px; }
-      .pd-sub { margin-top: 4px; font: 600 10px var(--hud-font); letter-spacing: 0.1em; color: var(--tx2); }
+      .pd1 .pd-name { font-size: 18px; color: #fff; }
+      .pd-kills { margin-top: 5px; font: 600 10px var(--hud-font); letter-spacing: 0.18em; color: var(--tx2); }
+      .pd-kills b { font-size: 25px; letter-spacing: 0.02em; color: var(--pc); margin-right: 5px; font-variant-numeric: tabular-nums; }
+      .pd1 .pd-kills b { font-size: 31px; }
+      .pd-sub { margin-top: 5px; font: 600 10px var(--hud-font); letter-spacing: 0.08em; color: var(--tx2); }
       .pd-step {
+        margin-top: -1px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font: 800 16px var(--hud-font);
+        font: 800 17px var(--hud-font);
         letter-spacing: 0.1em;
         color: var(--pc);
         text-shadow: 0 0 10px color-mix(in srgb, var(--pc) 55%, transparent);
-        border: 1px solid color-mix(in srgb, var(--pc) 30%, transparent);
-        background:
-          linear-gradient(180deg, color-mix(in srgb, var(--pc) 18%, rgba(22, 26, 31, 0.95)), rgba(11, 13, 16, 0.95));
-        box-shadow: inset 0 1px 0 color-mix(in srgb, var(--pc) 25%, transparent);
+        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px));
+        background: linear-gradient(180deg, color-mix(in srgb, var(--pc) 20%, rgba(22, 26, 31, 0.96)), rgba(10, 12, 15, 0.96));
+        box-shadow:
+          inset 0 0 0 1px color-mix(in srgb, var(--pc) 26%, transparent),
+          inset 0 1px 0 color-mix(in srgb, var(--pc) 30%, transparent);
       }
-      .pd1 .pd-step { height: 58px; }
-      .pd2 .pd-step { height: 40px; }
-      .pd3 .pd-step { height: 30px; }
+      .pd1 .pd-step { height: 66px; }
+      .pd2 .pd-step { height: 44px; }
+      .pd3 .pd-step { height: 32px; }
       /* Unified pane header — every tab gets the same title + subtitle */
       .mm-pane-head {
         text-align: center;
