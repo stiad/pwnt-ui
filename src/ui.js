@@ -709,7 +709,7 @@ function setupAmbient() {
     x: rand(0, W),
     y: seed ? rand(0, H) : H + rand(0, 60),
     r: rand(1.1, 3.2),
-    vy: rand(240, 420),      // px/sec upward — fast rise
+    vy: rand(360, 620),      // px/sec upward — fast rise
     vx: rand(-45, 45),       // px/sec sideways — sets the arc's launch angle
     ax: rand(-40, 40),       // sideways accel — this is what bends the path
     phase: rand(0, Math.PI * 2),
