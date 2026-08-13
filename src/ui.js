@@ -673,6 +673,162 @@ function setupSettings() {
   }
 }
 
+// ------------------------------------------------------------- ambient embers
+
+// A living backdrop for the whole menu: warm sparks drift upward with a slow
+// flicker, soft copper glows breathe behind them for depth, and the odd bright
+// spark streaks through. Pure canvas — no assets, no network. It sits behind
+// every pane (the cards are translucent charcoal, so they read cleanly on top).
+function setupAmbient() {
+  const menu = $("mainmenu");
+  if (!menu) return;
+
+  const style = document.createElement("style");
+  style.textContent = `
+    #mm-fx { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+    #mainmenu > .mm-head, #mainmenu > .mm-body { position: relative; z-index: 1; }
+  `;
+  document.head.append(style);
+
+  const canvas = document.createElement("canvas");
+  canvas.id = "mm-fx";
+  canvas.setAttribute("aria-hidden", "true");
+  menu.prepend(canvas);
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W = 0, H = 0, dpr = 1;
+  let embers = [];
+  let glows = [];
+
+  const rand = (a, b) => a + Math.random() * (b - a);
+
+  const makeEmber = (seed = false) => ({
+    x: rand(0, W),
+    y: seed ? rand(0, H) : H + rand(0, 60),
+    r: rand(0.7, 2.6),
+    vy: rand(10, 34),        // px/sec upward
+    drift: rand(-10, 10),    // horizontal sway amplitude
+    sway: rand(0.3, 1.1),    // sway speed
+    phase: rand(0, Math.PI * 2),
+    life: rand(4, 11),
+    age: seed ? rand(0, 6) : 0,
+    hot: Math.random() < 0.12, // brighter, whiter sparks
+  });
+
+  const makeGlow = () => ({
+    x: rand(0, W),
+    y: rand(H * 0.25, H),
+    r: rand(120, 280),
+    vx: rand(-6, 6),
+    vy: rand(-8, -2),
+    phase: rand(0, Math.PI * 2),
+    breathe: rand(0.25, 0.5),
+  });
+
+  const resize = () => {
+    const w = menu.clientWidth, h = menu.clientHeight;
+    if (w === 0 || h === 0) return; // menu still hidden — wait for it to show
+    if (w === W && h === H) return; // no real change
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = w;
+    H = h;
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    canvas.style.width = W + "px";
+    canvas.style.height = H + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const emberCount = Math.round(Math.min(120, (W * H) / 14000));
+    embers = Array.from({ length: emberCount }, () => makeEmber(true));
+    glows = Array.from({ length: 5 }, makeGlow);
+  };
+
+  const drawGlows = (t) => {
+    ctx.globalCompositeOperation = "lighter";
+    for (const g of glows) {
+      const pulse = 0.5 + 0.5 * Math.sin(t * g.breathe + g.phase);
+      const a = 0.05 + pulse * 0.06;
+      const grad = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, g.r);
+      grad.addColorStop(0, `rgba(255, 150, 60, ${a})`);
+      grad.addColorStop(0.5, `rgba(210, 100, 30, ${a * 0.4})`);
+      grad.addColorStop(1, "rgba(120, 50, 10, 0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(g.x, g.y, g.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  };
+
+  const drawEmber = (e, t) => {
+    const fade = Math.min(1, e.age / 0.8) * Math.max(0, 1 - e.age / e.life);
+    const rise = 1 - e.y / H;
+    const a = fade * (0.35 + rise * 0.55);
+    if (a <= 0) return;
+    const x = e.x + Math.sin(t * e.sway + e.phase) * e.drift;
+    const grad = ctx.createRadialGradient(x, e.y, 0, x, e.y, e.r * 4);
+    if (e.hot) {
+      grad.addColorStop(0, `rgba(255, 240, 210, ${a})`);
+      grad.addColorStop(0.4, `rgba(255, 180, 90, ${a * 0.8})`);
+    } else {
+      grad.addColorStop(0, `rgba(255, 190, 110, ${a})`);
+      grad.addColorStop(0.4, `rgba(247, 148, 34, ${a * 0.7})`);
+    }
+    grad.addColorStop(1, "rgba(200, 90, 20, 0)");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(x, e.y, e.r * 4, 0, Math.PI * 2);
+    ctx.fill();
+  };
+
+  let last = performance.now();
+  const frame = (now) => {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    const t = now / 1000;
+    const active = menu.classList.contains("show") && !document.hidden;
+
+    if (active) {
+      ctx.clearRect(0, 0, W, H);
+      drawGlows(t);
+      ctx.globalCompositeOperation = "lighter";
+      for (const g of glows) {
+        g.x += g.vx * dt;
+        g.y += g.vy * dt;
+        if (g.y + g.r < 0) { g.y = H + g.r; g.x = rand(0, W); }
+        if (g.x < -g.r) g.x = W + g.r;
+        if (g.x > W + g.r) g.x = -g.r;
+      }
+      for (const e of embers) {
+        e.age += dt;
+        e.y -= e.vy * dt;
+        drawEmber(e, t);
+        if (e.age >= e.life || e.y < -20) Object.assign(e, makeEmber(false));
+      }
+      ctx.globalCompositeOperation = "source-over";
+    }
+    requestAnimationFrame(frame);
+  };
+
+  if (reduce) {
+    // Static, calm field — draw once the menu has real size, then stop.
+    const ro = new ResizeObserver(() => {
+      resize();
+      if (W === 0 || H === 0) return;
+      ctx.clearRect(0, 0, W, H);
+      drawGlows(0);
+      for (const e of embers) drawEmber(e, 0);
+      ctx.globalCompositeOperation = "source-over";
+    });
+    ro.observe(menu);
+    return;
+  }
+
+  new ResizeObserver(resize).observe(menu);
+  requestAnimationFrame(frame);
+}
+
 // ---------------------------------------------------------------------- boot
 
 function openMenu() {
@@ -713,6 +869,7 @@ function boot() {
   paintBoard();
   setupBoardControls();
   renderShop();
+  setupAmbient();
   // The inline guard in index.html sets .tomenu when credentials are saved.
   if (document.documentElement.classList.contains("tomenu")) openMenu();
   // Nothing renders into #app in this build; drop the game canvas hole.
