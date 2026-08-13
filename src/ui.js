@@ -720,19 +720,34 @@ function setupAmbient() {
     hot: Math.random() < 0.28, // brighter, whiter sparks
   });
 
-  const makeSmoke = (seed = false) => ({
-    x: rand(0, W),
-    y: seed ? rand(0, H) : H + rand(20, 90),
-    r: rand(60, 130),          // starting radius — it swells as it climbs
-    grow: rand(30, 70),        // px/sec the puff expands
-    vy: rand(35, 70),          // slow lazy rise
-    vx: rand(-18, 18),
-    drift: rand(10, 26),       // sideways wander strength
-    phase: rand(0, Math.PI * 2),
-    sway: rand(0.3, 0.7),      // wander speed
-    life: rand(6, 11),         // long-lived so it fades gently
-    age: seed ? rand(0, 5) : 0,
-  });
+  const makeSmoke = (seed = false) => {
+    // Each puff is several offset lobes so its silhouette is irregular and
+    // billowy rather than a single symmetric blob.
+    const lobes = Array.from({ length: 4 + Math.floor(Math.random() * 3) }, () => ({
+      ox: rand(-0.7, 0.7),      // offset as a fraction of the puff radius
+      oy: rand(-0.9, 0.5),
+      rf: rand(0.45, 0.95),     // this lobe's size relative to the puff
+      swayX: rand(0.4, 1.1),    // per-lobe turbulence — they don't move in lockstep
+      swayY: rand(0.3, 0.9),
+      phase: rand(0, Math.PI * 2),
+      amp: rand(0.05, 0.18),
+    }));
+    return {
+      x: rand(0, W),
+      y: seed ? rand(0, H) : H + rand(20, 90),
+      r: rand(50, 100),          // starting radius — it swells as it climbs
+      grow: rand(24, 52),        // px/sec the puff expands
+      vy: rand(30, 60),          // slow lazy rise
+      vx: rand(-16, 16),
+      drift: rand(12, 30),       // sideways wander strength
+      phase: rand(0, Math.PI * 2),
+      sway: rand(0.25, 0.6),     // wander speed
+      stretch: rand(1.25, 1.7),  // vertical elongation — smoke rises in columns
+      life: rand(7, 13),         // long-lived so it fades gently
+      age: seed ? rand(0, 6) : 0,
+      lobes,
+    };
+  };
 
   const makeGlow = () => ({
     x: rand(0, W),
@@ -766,18 +781,30 @@ function setupAmbient() {
   const drawSmoke = (t) => {
     ctx.globalCompositeOperation = "source-over";
     for (const s of smoke) {
-      const fade = Math.min(1, s.age / 1.5) * Math.max(0, 1 - s.age / s.life);
-      const a = fade * 0.16;
-      if (a <= 0) continue;
+      // Puffs fade in, thin out as they swell, then fade away near end of life.
+      const grown = 1 - Math.min(1, (s.r - 60) / 260) * 0.55;
+      const fade = Math.min(1, s.age / 1.8) * Math.max(0, 1 - s.age / s.life);
+      const base = fade * grown * 0.14;
+      if (base <= 0) continue;
       const wob = Math.sin(t * s.sway + s.phase) * s.drift;
-      const grad = ctx.createRadialGradient(s.x + wob, s.y, 0, s.x + wob, s.y, s.r);
-      grad.addColorStop(0, `rgba(150, 128, 112, ${a})`);
-      grad.addColorStop(0.55, `rgba(110, 95, 85, ${a * 0.55})`);
-      grad.addColorStop(1, "rgba(70, 60, 55, 0)");
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(s.x + wob, s.y, s.r, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.save();
+      ctx.translate(s.x + wob, s.y);
+      ctx.scale(1, s.stretch);   // elongate vertically into a rising column
+      for (const lo of s.lobes) {
+        const tx = lo.ox * s.r + Math.sin(t * lo.swayX + lo.phase) * s.r * lo.amp;
+        const ty = lo.oy * s.r + Math.cos(t * lo.swayY + lo.phase) * s.r * lo.amp;
+        const lr = s.r * lo.rf;
+        const a = base;
+        const grad = ctx.createRadialGradient(tx, ty, 0, tx, ty, lr);
+        grad.addColorStop(0, `rgba(158, 136, 120, ${a})`);
+        grad.addColorStop(0.5, `rgba(112, 97, 88, ${a * 0.5})`);
+        grad.addColorStop(1, "rgba(70, 60, 55, 0)");
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(tx, ty, lr, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
     }
   };
 
