@@ -1497,56 +1497,58 @@
       .mm-teaser.owned i { background: #ffc073; }
       .mm-teaser b { color: #35d07f; letter-spacing: 0.2em; font-size: 9px; }
       /* Leaderboard */
+      /* Toolbar sits flush on top of the board as one connected panel:
+         mode switch on the left, period switch on the right, copper seam below. */
       .mm-lb-head {
+        position: relative;
+        z-index: 1;
+        max-width: 980px;
+        margin: 0 auto;
         display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: 10px;
-        margin-bottom: 16px;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+        padding: 11px 14px;
+        background: linear-gradient(180deg, rgba(34, 36, 41, 0.94), rgba(20, 22, 25, 0.94));
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+        clip-path: polygon(9px 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 0 100%, 0 9px);
       }
-      .mm-periods, .mm-modesel { display: flex; gap: 6px; }
-      .mm-periods button {
-        padding: 8px 18px;
-        border: none;
-        border-radius: 0;
+      .mm-lb-head::after {
+        content: "";
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        bottom: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(247, 148, 34, 0.5), transparent);
+      }
+      /* Segmented tracks: a recessed rail holding the pills, so the active
+         option reads as a switch rather than a floating button. */
+      .mm-periods, .mm-modesel {
+        display: flex;
+        gap: 4px;
+        padding: 4px;
+        background: rgba(0, 0, 0, 0.28);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
         clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
-        background: rgba(255, 255, 255, 0.04);
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-        color: var(--tx2);
-        font: 700 11px var(--hud-font);
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: color 0.14s, box-shadow 0.14s, background 0.14s;
       }
-      .mm-periods button.on {
-        color: var(--ui-hi);
-        background: rgba(247, 148, 34, 0.12);
-        box-shadow: inset 0 0 0 1px rgba(247, 148, 34, 0.5);
-      }
-      /* Mode selector: forged segmented switch, one notch heavier than the
-         period pills so the two tiers read at a glance. */
-      .mm-modesel button {
-        padding: 9px 26px;
+      .mm-periods button, .mm-modesel button {
         border: none;
-        border-radius: 0;
-        clip-path: var(--chamfer);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+        background: transparent;
         color: var(--tx2);
-        font: 800 12.5px var(--hud-font);
-        letter-spacing: 0.22em;
-        text-indent: 0.22em;
         text-transform: uppercase;
         cursor: pointer;
-        transition: color 0.14s, box-shadow 0.14s, background 0.14s, filter 0.14s;
+        clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+        transition: color 0.14s, background 0.14s, box-shadow 0.14s;
       }
-      .mm-modesel button.on {
-        color: var(--ui-hi);
-        background: linear-gradient(180deg, rgba(247, 148, 34, 0.16), rgba(247, 148, 34, 0.06));
-        box-shadow: inset 0 0 0 1px rgba(247, 148, 34, 0.55);
-        filter: drop-shadow(0 0 14px rgba(247, 148, 34, 0.3));
-        text-shadow: 0 0 12px rgba(247, 148, 34, 0.45);
+      .mm-periods button { padding: 6px 15px; font: 700 10.5px var(--hud-font); letter-spacing: 0.16em; }
+      .mm-modesel button { padding: 7px 18px; font: 800 11.5px var(--hud-font); letter-spacing: 0.18em; text-indent: 0.18em; }
+      .mm-periods button:hover, .mm-modesel button:hover { color: var(--tx); background: rgba(255, 255, 255, 0.05); }
+      .mm-periods button.on, .mm-modesel button.on {
+        color: var(--ui-ink);
+        background: linear-gradient(180deg, var(--ui-hi), var(--ui));
+        box-shadow: 0 0 12px rgba(247, 148, 34, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
       }
       /* The board itself wears the hero-card treatment (ember border, machined
          streak, top glow) — same language as the settings/mode cards. */
@@ -1556,24 +1558,16 @@
         position: relative;
         max-width: 980px;
         margin: 0 auto;
-        padding: 8px 12px 14px;
+        padding: 16px 12px 14px;
         border: none;
         border-radius: 0;
-        clip-path: var(--chamfer);
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 9px 100%, 0 calc(100% - 9px));
         background: linear-gradient(180deg, rgba(28, 30, 34, 0.92), rgba(12, 13, 15, 0.94));
         box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1),
           inset 0 1px 0 rgba(255, 255, 255, 0.06);
         filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.5));
       }
-      .mm-lb::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 14%;
-        right: 14%;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(210, 225, 240, 0.35), transparent);
-      }
+      .mm-lb::before { content: none; }
       /* shared YOU tag */
       .mm-lb-you {
         flex: none;
@@ -1594,7 +1588,7 @@
         gap: 24px;
         align-items: center;
         padding: 22px 26px;
-        margin: 6px 0 18px;
+        margin: 2px 0 18px;
         clip-path: var(--chamfer);
         background:
           radial-gradient(120% 150% at 100% 0%, rgba(255, 211, 107, 0.13), transparent 55%),
