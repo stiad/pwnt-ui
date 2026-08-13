@@ -687,6 +687,16 @@ function setupAmbient() {
   style.textContent = `
     #mm-fx { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
     #mainmenu > .mm-head, #mainmenu > .mm-body { position: relative; z-index: 1; }
+    /* Cinematic vignette: darkens the far edges so the lit centre reads with
+       depth, the way a AAA menu frames its focal point. */
+    #mainmenu::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background: radial-gradient(135% 105% at 50% 40%, transparent 56%, rgba(0, 0, 0, 0.34) 100%);
+    }
   `;
   document.head.append(style);
 

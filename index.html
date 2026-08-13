@@ -1258,6 +1258,80 @@
       }
       .mm-mode.soon { opacity: 0.45; cursor: default; }
       .mm-mode.soon .mm-mode-go { background: rgba(255, 255, 255, 0.1); color: var(--tx2); box-shadow: none; }
+
+      /* Tactical HUD framing on the hero deploy tiles: corner brackets that
+         ignite copper and pull inward on hover, a mode index tag, and a slow
+         scan band sweeping the art — the language of a AAA loadout screen. */
+      @property --brk {
+        syntax: "<color>";
+        inherits: true;
+        initial-value: rgba(255, 255, 255, 0.22);
+      }
+      .mm-mode-name, .mm-mode-sub, .mm-mode-hint, .mm-mode-tag { position: relative; z-index: 1; }
+      .mm-mode-tag {
+        position: absolute;
+        top: 16px;
+        left: 22px;
+        padding-left: 15px;
+        font: 700 11px var(--hud-font);
+        letter-spacing: 0.3em;
+        color: rgba(255, 255, 255, 0.55);
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+        transition: color 0.2s;
+      }
+      .mm-mode-tag::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 9px;
+        height: 2px;
+        background: var(--copper);
+        box-shadow: 0 0 8px rgba(247, 148, 34, 0.8);
+        transform: translateY(-50%);
+        transition: width 0.2s;
+      }
+      .mm-mode:not(.soon):hover .mm-mode-tag { color: #ffd7a6; }
+      .mm-mode:not(.soon):hover .mm-mode-tag::before { width: 15px; }
+      .mm-mode-frame {
+        --brk: rgba(255, 255, 255, 0.22);
+        position: absolute;
+        inset: 14px;
+        z-index: 0;
+        pointer-events: none;
+        --len: 18px;
+        --w: 2px;
+        background:
+          linear-gradient(var(--brk), var(--brk)) 0 0 / var(--w) var(--len) no-repeat,
+          linear-gradient(var(--brk), var(--brk)) 0 0 / var(--len) var(--w) no-repeat,
+          linear-gradient(var(--brk), var(--brk)) 100% 0 / var(--w) var(--len) no-repeat,
+          linear-gradient(var(--brk), var(--brk)) 100% 0 / var(--len) var(--w) no-repeat,
+          linear-gradient(var(--brk), var(--brk)) 0 100% / var(--w) var(--len) no-repeat,
+          linear-gradient(var(--brk), var(--brk)) 0 100% / var(--len) var(--w) no-repeat,
+          linear-gradient(var(--brk), var(--brk)) 100% 100% / var(--w) var(--len) no-repeat,
+          linear-gradient(var(--brk), var(--brk)) 100% 100% / var(--len) var(--w) no-repeat;
+        transition: --brk 0.25s ease, inset 0.25s ease;
+      }
+      .mm-mode:not(.soon):hover .mm-mode-frame { --brk: rgba(255, 184, 92, 0.95); inset: 10px; }
+      .mm-mode-frame::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        background: linear-gradient(180deg, transparent 45%, rgba(255, 205, 140, 0.5) 50%, transparent 55%);
+        background-size: 100% 220%;
+        background-position: 0 -60%;
+        mix-blend-mode: screen;
+        transition: opacity 0.3s;
+      }
+      .mm-mode:not(.soon):hover .mm-mode-frame::before { opacity: 1; animation: mm-scan 2s linear infinite; }
+      @keyframes mm-scan {
+        from { background-position: 0 -60%; }
+        to { background-position: 0 160%; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .mm-mode-frame::before { animation: none; }
+      }
       /* Settings cards */
       .mm-cols { display: flex; gap: 18px; flex-wrap: wrap; align-items: flex-start; justify-content: center; }
       .mm-card {
@@ -4569,11 +4643,15 @@
             <div class="mm-pane-sub">choose your mode &middot; click a card to drop in</div>
             <div class="mm-modes">
               <button class="mm-mode" id="mm-mode-tdm" type="button">
+                <span class="mm-mode-frame" aria-hidden="true"></span>
+                <span class="mm-mode-tag">MODE 01</span>
                 <span class="mm-mode-name">TEAM<br/>DEATHMATCH</span>
                 <span class="mm-mode-sub">5v5 &middot; bots fill &middot; first to 30</span>
                 <span class="mm-mode-hint">CLICK TO DEPLOY</span>
               </button>
               <button class="mm-mode" id="mm-mode-ffa" type="button">
+                <span class="mm-mode-frame" aria-hidden="true"></span>
+                <span class="mm-mode-tag">MODE 02</span>
                 <span class="mm-mode-name">FREE<br/>FOR ALL</span>
                 <span class="mm-mode-sub">6 seats &middot; every operator for themselves &middot; first to 20</span>
                 <span class="mm-mode-hint">CLICK TO DEPLOY</span>
