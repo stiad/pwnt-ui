@@ -293,13 +293,15 @@ function say(text, from = "") {
   const self = from === OPERATOR;
   lastFrom = from;
   const isDev = SPEAKERS[from]?.dev;
+  const accent = self ? "#35d07f" : speakerColor(from);
 
   const line = document.createElement("div");
   line.className = "soc-msg" + (self ? " self" : " other");
+  line.style.setProperty("--accent", accent);
 
-  const time = document.createElement("time");
-  time.textContent = clockNow();
-  line.append(time);
+  const tick = document.createElement("span");
+  tick.className = "soc-tick";
+  line.append(tick);
 
   if (isDev) {
     const chip = document.createElement("span");
@@ -310,14 +312,19 @@ function say(text, from = "") {
 
   const who = document.createElement("b");
   who.className = "name" + (isDev ? " dev-name" : "");
-  if (!isDev) who.style.color = self ? "#35d07f" : speakerColor(from);
+  if (!isDev) who.style.color = accent;
   who.textContent = from;
   line.append(who);
 
   const body = document.createElement("span");
   body.className = "soc-text";
   body.textContent = text;
+  body.title = text;
   line.append(body);
+
+  const time = document.createElement("time");
+  time.textContent = clockNow();
+  line.append(time);
 
   box.append(line);
   box.scrollTop = box.scrollHeight;
@@ -327,14 +334,44 @@ function setupSocial() {
   const tabs = $("soc-chat-tabs");
   if (tabs) {
     tabs.textContent = "";
-    for (const name of ["GLOBAL", "Banana"]) {
+    const activate = (b) =>
+      [...tabs.children].forEach((c) => c.classList.toggle("on", c === b));
+
+    const global = document.createElement("button");
+    global.type = "button";
+    global.className = "tab-global on";
+    const gIcon = document.createElement("span");
+    gIcon.className = "ti";
+    gIcon.innerHTML =
+      '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.5 2.6 15.5 0 18M12 3c-2.6 2.5-2.6 15.5 0 18"/></svg>';
+    const gLabel = document.createElement("span");
+    gLabel.className = "tl";
+    gLabel.textContent = "Global";
+    const gLive = document.createElement("i");
+    gLive.className = "live";
+    global.append(gIcon, gLabel, gLive);
+    on(global, "click", () => activate(global));
+    tabs.append(global);
+
+    for (const name of ["Banana"]) {
       const b = document.createElement("button");
       b.type = "button";
-      b.classList.toggle("on", name === "GLOBAL");
-      b.textContent = name;
-      on(b, "click", () => {
-        [...tabs.children].forEach((c) => c.classList.toggle("on", c === b));
+      b.className = "tab-dm";
+      const dot = document.createElement("span");
+      dot.className = "dm-dot online";
+      const label = document.createElement("span");
+      label.className = "tl";
+      label.textContent = "@" + name;
+      const x = document.createElement("i");
+      x.className = "x";
+      x.textContent = "\u00d7";
+      on(x, "click", (e) => {
+        e.stopPropagation();
+        if (b.classList.contains("on")) activate(global);
+        b.remove();
       });
+      b.append(dot, label, x);
+      on(b, "click", () => activate(b));
       tabs.append(b);
     }
   }
