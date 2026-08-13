@@ -710,12 +710,12 @@ function setupAmbient() {
     y: seed ? rand(0, H) : H + rand(0, 60),
     r: rand(1.1, 3.2),
     vy: rand(45, 105),       // px/sec upward
-    drift: rand(-16, 16),    // horizontal sway amplitude
-    sway: rand(0.6, 1.8),    // sway speed
+    vx: rand(-45, 45),       // px/sec sideways — sets the arc's launch angle
+    ax: rand(-40, 40),       // sideways accel — this is what bends the path
     phase: rand(0, Math.PI * 2),
     flick: rand(6, 13),      // flicker speed
-    life: rand(4, 11),
-    age: seed ? rand(0, 6) : 0,
+    life: rand(1.6, 7),      // wide spread so they wink out at random heights
+    age: seed ? rand(0, 3) : 0,
     hot: Math.random() < 0.28, // brighter, whiter sparks
   });
 
@@ -768,7 +768,7 @@ function setupAmbient() {
     const flick = 0.75 + 0.25 * Math.sin(t * e.flick + e.phase);
     const a = fade * (0.65 + rise * 0.35) * flick;
     if (a <= 0) return;
-    const x = e.x + Math.sin(t * e.sway + e.phase) * e.drift;
+    const x = e.x;
 
     // Outer halo — tight so it glows without smearing into haze.
     const halo = ctx.createRadialGradient(x, e.y, 0, x, e.y, e.r * 3);
@@ -814,9 +814,13 @@ function setupAmbient() {
       }
       for (const e of embers) {
         e.age += dt;
+        e.vx += e.ax * dt;       // bend the trajectory into an arc
+        e.vy *= 1 - 0.22 * dt;   // buoyancy fades — the ember slows and arcs over
+        e.x += e.vx * dt;
         e.y -= e.vy * dt;
         drawEmber(e, t);
-        if (e.age >= e.life || e.y < -20) Object.assign(e, makeEmber(false));
+        if (e.age >= e.life || e.y < -20 || e.x < -40 || e.x > W + 40)
+          Object.assign(e, makeEmber(false));
       }
       ctx.globalCompositeOperation = "source-over";
     }
