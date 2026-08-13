@@ -767,13 +767,13 @@ function setupAmbient() {
     ctx.globalCompositeOperation = "source-over";
     for (const s of smoke) {
       const fade = Math.min(1, s.age / 1.5) * Math.max(0, 1 - s.age / s.life);
-      const a = fade * 0.06;
+      const a = fade * 0.16;
       if (a <= 0) continue;
       const wob = Math.sin(t * s.sway + s.phase) * s.drift;
       const grad = ctx.createRadialGradient(s.x + wob, s.y, 0, s.x + wob, s.y, s.r);
-      grad.addColorStop(0, `rgba(70, 58, 52, ${a})`);
-      grad.addColorStop(0.6, `rgba(45, 38, 36, ${a * 0.5})`);
-      grad.addColorStop(1, "rgba(25, 22, 22, 0)");
+      grad.addColorStop(0, `rgba(150, 128, 112, ${a})`);
+      grad.addColorStop(0.55, `rgba(110, 95, 85, ${a * 0.55})`);
+      grad.addColorStop(1, "rgba(70, 60, 55, 0)");
       ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.arc(s.x + wob, s.y, s.r, 0, Math.PI * 2);
