@@ -22,13 +22,33 @@ const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
 const OPERATOR = localStorage.getItem("fps.name") || "OPERATOR";
 
 const FRIENDS = [
-  { name: "Banana", online: true, status: "tdm" },
-  { name: "Reaper", online: true, status: "shop" },
-  { name: "Vex", online: true, status: "board" },
-  { name: "Sable", online: true, status: "menu" },
-  { name: "Koda", online: false, status: "" },
-  { name: "Mirth", online: false, status: "" },
+  { name: "Banana", online: true, status: "tdm", level: 42 },
+  { name: "Reaper", online: true, status: "shop", level: 71 },
+  { name: "Vex", online: true, status: "board", level: 108 },
+  { name: "Sable", online: true, status: "menu", level: 17 },
+  { name: "Koda", online: false, status: "", level: 33 },
+  { name: "Mirth", online: false, status: "", level: 9 },
 ];
+
+// Mirrors the party widget's level-badge tiers: colour ramps up with rank.
+function lvlTier(level) {
+  if (level >= 100) return "t6";
+  if (level >= 75) return "t5";
+  if (level >= 50) return "t4";
+  if (level >= 25) return "t3";
+  if (level >= 10) return "t2";
+  return "";
+}
+
+function makeLvlBadge(level) {
+  const badge = document.createElement("span");
+  badge.className = ("lvl-badge mini " + lvlTier(level)).trim();
+  badge.style.setProperty("--p", `${level % 100}%`);
+  const b = document.createElement("b");
+  b.textContent = String(level);
+  badge.append(b);
+  return badge;
+}
 
 // Mirrors STATUS_LABEL in the real client.
 const STATUS_LABEL = {
@@ -176,34 +196,60 @@ function paintFriends() {
   const list = $("soc-flist");
   if (!list) return;
   list.textContent = "";
-  const sorted = [...FRIENDS].sort(
-    (a, b) => Number(b.online) - Number(a.online) || a.name.localeCompare(b.name),
-  );
-  for (const f of sorted) {
-    const inGame = f.status === "tdm" || f.status === "ffa";
-    const row = document.createElement("div");
-    row.className = "soc-friend" + (f.online ? (inGame ? " ingame online" : " online") : "");
-    const dot = document.createElement("span");
-    dot.className = "dot";
-    const fn = document.createElement("span");
-    fn.className = "fn";
-    fn.textContent = f.name;
-    const st = document.createElement("span");
-    st.className = "st";
-    st.textContent = f.online ? (STATUS_LABEL[f.status] ?? "ONLINE") : "OFFLINE";
-    row.append(dot, fn, st);
-    if (f.online) {
-      for (const label of ["DM", "INVITE"]) {
-        const b = document.createElement("button");
-        b.className = "fbtn";
-        b.type = "button";
-        b.textContent = label;
-        on(b, "click", () => say(`${label.toLowerCase()} → ${f.name} (offline shell)`));
-        row.append(b);
-      }
+  const byName = (a, b) => a.name.localeCompare(b.name);
+  const online = FRIENDS.filter((f) => f.online).sort(byName);
+  const offline = FRIENDS.filter((f) => !f.online).sort(byName);
+
+  const section = (label, group) => {
+    if (!group.length) return;
+    const head = document.createElement("div");
+    head.className = "soc-fhead";
+    head.textContent = `${label} — ${group.length}`;
+    list.append(head);
+    for (const f of group) list.append(friendRow(f));
+  };
+
+  section("ONLINE", online);
+  section("OFFLINE", offline);
+}
+
+function friendRow(f) {
+  const inGame = f.status === "tdm" || f.status === "ffa";
+  const row = document.createElement("div");
+  row.className = "soc-friend" + (f.online ? (inGame ? " ingame online" : " online") : "");
+
+  const badge = makeLvlBadge(f.level);
+
+  const mid = document.createElement("div");
+  mid.className = "soc-fmid";
+  const fn = document.createElement("span");
+  fn.className = "fn";
+  fn.textContent = f.name;
+  const st = document.createElement("span");
+  st.className = "st";
+  const dot = document.createElement("span");
+  dot.className = "dot";
+  const stText = document.createElement("span");
+  stText.textContent = f.online ? (STATUS_LABEL[f.status] ?? "ONLINE") : "OFFLINE";
+  st.append(dot, stText);
+  mid.append(fn, st);
+
+  row.append(badge, mid);
+
+  if (f.online) {
+    const acts = document.createElement("div");
+    acts.className = "soc-facts";
+    for (const label of ["DM", "INVITE"]) {
+      const b = document.createElement("button");
+      b.className = "fbtn";
+      b.type = "button";
+      b.textContent = label;
+      on(b, "click", () => say(`${label.toLowerCase()} → ${f.name} (offline shell)`));
+      acts.append(b);
     }
-    list.append(row);
+    row.append(acts);
   }
+  return row;
 }
 
 function say(text, from = "") {

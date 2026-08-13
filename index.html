@@ -2076,20 +2076,53 @@
         color: var(--tx);
       }
       #soc-pending .soc-preq span { flex: 1; overflow: hidden; text-overflow: ellipsis; }
-      #soc-flist { flex: 1; overflow-y: auto; scrollbar-width: thin; }
+      #soc-flist { flex: 1; overflow-y: auto; scrollbar-width: thin; display: flex; flex-direction: column; gap: 6px; }
+      .soc-fhead {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 10px 2px 2px;
+        font: 700 10px var(--hud-font);
+        letter-spacing: 0.22em;
+        color: var(--tx2);
+        text-transform: uppercase;
+      }
+      .soc-fhead:first-child { margin-top: 2px; }
+      .soc-fhead::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.12), transparent);
+      }
       .soc-friend {
         display: flex;
         align-items: center;
-        gap: 9px;
-        padding: 9px 10px;
-        border-radius: 8px;
+        gap: 11px;
+        padding: 8px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 7px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015));
         font: 600 14px var(--hud-font);
         color: var(--tx);
+        transition: border-color 0.18s, background 0.18s;
       }
-      .soc-friend:hover { background: rgba(247, 148, 34, 0.07); }
+      .soc-friend:hover { border-color: rgba(255, 178, 92, 0.35); background: rgba(247, 148, 34, 0.07); }
+      .soc-friend .lvl-badge.mini { width: 30px; height: 34px; flex: none; animation: none; }
+      .soc-friend .lvl-badge.mini::before { inset: 2px; }
+      .soc-friend .lvl-badge.mini::after { display: none; }
+      .soc-friend .lvl-badge.mini b {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font: 800 12px var(--hud-font);
+        line-height: 1;
+      }
+      .soc-friend .soc-fmid { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+      .soc-friend .soc-facts { display: flex; gap: 6px; flex: none; }
       .soc-friend .dot {
-        width: 9px;
-        height: 9px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
         background: #5a6675;
         flex: none;
@@ -2107,8 +2140,8 @@
       @media (prefers-reduced-motion: reduce) {
         .soc-friend.online .dot, .soc-friend.ingame .dot { animation: none; }
       }
-      .soc-friend .fn { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      .soc-friend .st { font-size: 10px; letter-spacing: 0.14em; color: var(--tx2); text-transform: uppercase; }
+      .soc-friend .fn { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .soc-friend .st { display: flex; align-items: center; gap: 6px; font-size: 10px; letter-spacing: 0.14em; color: var(--tx2); text-transform: uppercase; }
       .soc-friend .fbtn, .soc-preq .fbtn {
         padding: 4px 10px;
         border: 1px solid rgba(255, 178, 92, 0.35);
