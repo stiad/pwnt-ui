@@ -3697,17 +3697,19 @@
       }
       #overlay .card {
         position: relative;
-        padding: 38px 44px 34px;
-        border: 1px solid rgba(255, 178, 92, 0.18);
-        border-radius: 18px;
-        background: linear-gradient(180deg,
-          rgba(20, 25, 30, 0.94) 0%, rgba(12, 15, 19, 0.96) 60%, rgba(10, 14, 18, 0.97) 100%);
+        padding: 26px 34px 24px;
+        border: 1px solid rgba(255, 178, 92, 0.2);
+        border-radius: 3px;
+        background:
+          repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.014) 0 1px, transparent 1px 3px),
+          linear-gradient(180deg, rgba(20, 25, 30, 0.95) 0%, rgba(11, 14, 18, 0.97) 100%);
         backdrop-filter: blur(10px);
         box-shadow:
           0 30px 80px rgba(0, 0, 0, 0.7),
-          inset 0 1px 0 rgba(255, 255, 255, 0.06),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05),
           inset 0 -26px 60px -30px var(--ui-glow);
-        max-width: 420px;
+        width: 384px;
+        max-width: 92vw;
       }
       /* top bevel light streak — the "machined edge" */
       #overlay .card::before {
@@ -3716,48 +3718,116 @@
         top: 0; left: 12%; right: 12%; height: 1px;
         background: linear-gradient(90deg, transparent, rgba(255, 205, 150, 0.6), transparent);
       }
+      /* L-shaped corner brackets — HUD framing */
+      .lg-corner {
+        position: absolute;
+        width: 13px; height: 13px;
+        border: 2px solid rgba(255, 178, 92, 0.6);
+        pointer-events: none;
+      }
+      .lg-corner.tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+      .lg-corner.tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+      .lg-corner.bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+      .lg-corner.br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+      /* status strip */
+      .lg-status {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        font: 700 9.5px/1 ui-sans-serif, system-ui, sans-serif;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: #8a939d;
+      }
+      .lg-status .lg-status-r { margin-left: auto; color: rgba(255, 178, 92, 0.75); }
+      .lg-dot {
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: #45e29b;
+        box-shadow: 0 0 8px #45e29b;
+        animation: lg-pulse 1.8s ease-in-out infinite;
+      }
+      @keyframes lg-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
       #overlay h1 { font-size: 20px; margin-bottom: 10px; color: var(--ui-hi); }
       #overlay #logo {
-        width: 330px;
-        max-width: 80vw;
-        margin-bottom: 10px;
+        width: 236px;
+        max-width: 70vw;
+        margin-bottom: 12px;
         filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.65));
       }
       #overlay .tagline {
         display: inline-block;
-        font: 700 10px/1 ui-sans-serif, system-ui, sans-serif;
-        letter-spacing: 0.32em;
+        font: 700 9.5px/1 ui-sans-serif, system-ui, sans-serif;
+        letter-spacing: 0.3em;
         color: var(--ui-hi);
         text-transform: uppercase;
-        margin-bottom: 18px;
+        margin-bottom: 22px;
         padding: 5px 12px;
         border: 1px solid rgba(255, 178, 92, 0.3);
-        border-radius: 999px;
+        border-radius: 0;
+        clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
         background: rgba(247, 148, 34, 0.08);
       }
+      .lg-form {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        text-align: left;
+      }
+      .lg-flabel {
+        display: block;
+        margin-bottom: 6px;
+        font: 700 10px/1 ui-sans-serif, system-ui, sans-serif;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #96a0aa;
+      }
+      .lg-flabel b { color: var(--ui-hi); margin-right: 9px; font-weight: 800; }
       #overlay #code-error {
         min-height: 16px;
+        margin-top: 12px;
         font: 600 12px/1.3 ui-sans-serif, system-ui, sans-serif;
+        letter-spacing: 0.02em;
         color: #ff6b5a;
       }
       #overlay .card input {
-        width: 230px;
-        margin: 5px 0 12px;
-        padding: 12px 14px;
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 12px 14px 12px 16px;
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        background: rgba(8, 10, 13, 0.85);
-        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.55);
+        border-left: 2px solid rgba(255, 178, 92, 0.35);
+        border-radius: 0;
+        background: rgba(6, 8, 11, 0.85);
+        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
         color: #eef6fb;
         font: 14px ui-monospace, monospace;
-        text-align: center;
+        letter-spacing: 0.04em;
+        text-align: left;
         outline: none;
-        transition: border-color 0.15s, box-shadow 0.15s;
+        transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
       }
-      #overlay .card input::placeholder { color: #62727e; }
+      #overlay .card input::placeholder { color: #5a6772; letter-spacing: 0; }
       #overlay .card input:focus {
-        border-color: rgba(247, 148, 34, 0.65);
-        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.55), 0 0 0 3px rgba(247, 148, 34, 0.14);
+        border-color: rgba(247, 148, 34, 0.5);
+        border-left-color: var(--ui);
+        background: rgba(10, 13, 17, 0.95);
+        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5), 0 0 0 3px rgba(247, 148, 34, 0.12);
+      }
+      .lg-foot {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 18px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        font: 600 9px/1 ui-monospace, monospace;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #5c6771;
       }
       #overlay kbd, #loadscreen kbd {
         display: inline-block;
@@ -3775,8 +3845,8 @@
       #deploy-btn {
         position: relative;
         overflow: hidden;
-        margin-top: 18px;
-        width: 240px;
+        margin-top: 20px;
+        width: 100%;
         padding: 16px 24px;
         border: none;
         border-radius: 0;
@@ -4995,12 +5065,32 @@
     </div>
     <div id="overlay">
       <div class="card">
+        <span class="lg-corner tl"></span>
+        <span class="lg-corner tr"></span>
+        <span class="lg-corner bl"></span>
+        <span class="lg-corner br"></span>
+        <div class="lg-status">
+          <span class="lg-dot"></span>Secure Terminal
+          <span class="lg-status-r">Link Established</span>
+        </div>
         <img id="logo" src="/images/wordmark-web.png" alt="pwnt.net" />
         <p class="tagline">ALPHA TEST · invite only</p>
-        <div><input id="name" maxlength="16" placeholder="your name" autocomplete="off" /></div>
-        <div><input id="code" maxlength="24" placeholder="alpha code" autocomplete="off" /></div>
+        <div class="lg-form">
+          <label class="lg-field">
+            <span class="lg-flabel"><b>01</b>Callsign</span>
+            <input id="name" maxlength="16" placeholder="enter your name" autocomplete="off" />
+          </label>
+          <label class="lg-field">
+            <span class="lg-flabel"><b>02</b>Access Code</span>
+            <input id="code" maxlength="24" placeholder="alpha invite code" autocomplete="off" />
+          </label>
+        </div>
         <div id="code-error"></div>
         <button id="deploy-btn" type="button">Deploy</button>
+        <div class="lg-foot">
+          <span>Build 0.1.0-alpha</span>
+          <span>Region · Auto</span>
+        </div>
       </div>
       <div id="mainmenu">
         <div class="mm-head">
