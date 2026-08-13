@@ -35,13 +35,12 @@
         --tx2: #8193a3;
         --cyan: #57dff7;
         --copper: #f79422;
-        /* Interface accent for menu/login/shop/stash/leaderboard — the game's
-           own HUD light. In-game HUD keeps --copper for its ember identity. */
-        --ui: #57dff7;
-        --ui-hi: #9cefff;
-        --ui-deep: #1f9fc0;
-        --ui-ink: #032230;
-        --ui-glow: rgba(87, 223, 247, 0.4);
+        /* Interface accent for menu/login/shop/stash/leaderboard buttons. */
+        --ui: #f79422;
+        --ui-hi: #ffb35c;
+        --ui-deep: #c2610a;
+        --ui-ink: #241102;
+        --ui-glow: rgba(247, 148, 34, 0.4);
         /* Angular corner cut shared by all tactical buttons — kills the
            rounded "web button" look and echoes the HUD's machined framing. */
         --chamfer: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
@@ -1010,17 +1009,17 @@
         top: 28%;
         bottom: 28%;
         width: 1px;
-        background: linear-gradient(180deg, transparent, rgba(120, 200, 225, 0.28), transparent);
+        background: linear-gradient(180deg, transparent, rgba(255, 178, 92, 0.28), transparent);
         pointer-events: none;
       }
       .mm-tabs button:hover {
-        color: #dff6fc;
+        color: #ffe4c4;
         background: rgba(255, 255, 255, 0.045);
         border-color: rgba(255, 255, 255, 0.1);
       }
       .mm-tabs button.on:hover {
-        background: linear-gradient(180deg, rgba(87, 223, 247, 0.18), rgba(87, 223, 247, 0.05));
-        border-color: rgba(87, 223, 247, 0.55);
+        background: linear-gradient(180deg, rgba(247, 148, 34, 0.18), rgba(247, 148, 34, 0.05));
+        border-color: rgba(247, 148, 34, 0.55);
       }
       .mm-tabs button svg {
         width: 18px;
@@ -1035,10 +1034,10 @@
       }
       .mm-tabs button.on {
         color: var(--ui-hi);
-        border-color: rgba(87, 223, 247, 0.55);
-        background: linear-gradient(180deg, rgba(87, 223, 247, 0.16), rgba(87, 223, 247, 0.05));
-        box-shadow: 0 0 20px rgba(87, 223, 247, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        text-shadow: 0 0 12px rgba(87, 223, 247, 0.45);
+        border-color: rgba(247, 148, 34, 0.55);
+        background: linear-gradient(180deg, rgba(247, 148, 34, 0.16), rgba(247, 148, 34, 0.05));
+        box-shadow: 0 0 20px rgba(247, 148, 34, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        text-shadow: 0 0 12px rgba(247, 148, 34, 0.45);
       }
       .mm-acct {
         display: flex;
@@ -1238,11 +1237,11 @@
       }
       .mm-mode:not(.soon):hover .mm-mode-hint {
         color: var(--ui-hi);
-        text-shadow: 0 0 12px rgba(87, 223, 247, 0.5);
+        text-shadow: 0 0 12px rgba(247, 148, 34, 0.5);
       }
       .mm-mode:not(.soon):hover {
-        border-color: rgba(87, 223, 247, 0.55);
-        box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5), 0 0 26px rgba(87, 223, 247, 0.2);
+        border-color: rgba(247, 148, 34, 0.55);
+        box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5), 0 0 26px rgba(247, 148, 34, 0.2);
       }
       .mm-mode-name { font: 700 30px/1.1 var(--hud-font); letter-spacing: 0.08em; }
       .mm-mode-sub { font: 500 13.5px var(--hud-font); letter-spacing: 0.08em; color: rgba(233, 240, 247, 0.9); }
@@ -1267,7 +1266,7 @@
       button.mm-mode-go:hover {
         transform: translateY(-1px);
         background: var(--ui-hi);
-        filter: drop-shadow(0 5px 18px rgba(87, 223, 247, 0.6));
+        filter: drop-shadow(0 5px 18px rgba(247, 148, 34, 0.6));
       }
       .mm-mode.soon { opacity: 0.45; cursor: default; }
       .mm-mode.soon .mm-mode-go { background: rgba(255, 255, 255, 0.1); color: var(--tx2); box-shadow: none; filter: none; }
@@ -1523,8 +1522,8 @@
       }
       .mm-periods button.on {
         color: var(--ui-hi);
-        border-color: rgba(87, 223, 247, 0.5);
-        background: rgba(87, 223, 247, 0.1);
+        border-color: rgba(247, 148, 34, 0.5);
+        background: rgba(247, 148, 34, 0.1);
       }
       /* Mode selector: forged segmented switch, one notch heavier than the
          period pills so the two tiers read at a glance. */
@@ -1543,10 +1542,10 @@
       }
       .mm-modesel button.on {
         color: var(--ui-hi);
-        border-color: rgba(87, 223, 247, 0.55);
-        background: linear-gradient(180deg, rgba(87, 223, 247, 0.16), rgba(87, 223, 247, 0.06));
-        box-shadow: 0 0 18px rgba(87, 223, 247, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        text-shadow: 0 0 12px rgba(87, 223, 247, 0.45);
+        border-color: rgba(247, 148, 34, 0.55);
+        background: linear-gradient(180deg, rgba(247, 148, 34, 0.16), rgba(247, 148, 34, 0.06));
+        box-shadow: 0 0 18px rgba(247, 148, 34, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        text-shadow: 0 0 12px rgba(247, 148, 34, 0.45);
       }
       /* The board itself wears the hero-card treatment (ember border, machined
          streak, top glow) — same language as the settings/mode cards. */
@@ -1700,7 +1699,7 @@
         width: 120px;
         height: 1px;
         margin: 10px auto 0;
-        background: linear-gradient(90deg, transparent, rgba(87, 223, 247, 0.5), transparent);
+        background: linear-gradient(90deg, transparent, rgba(247, 148, 34, 0.5), transparent);
       }
       .mm-pane-sub {
         text-align: center;
@@ -1821,7 +1820,7 @@
         margin-top: 9px;
         font: 700 16.5px var(--hud-font);
         font-variant-numeric: tabular-nums;
-        color: #e8f1f7;
+        color: #ffc073;
       }
       .shop-price img { height: 16px; width: auto; }
       .shop-btn {
@@ -1843,7 +1842,7 @@
         filter: drop-shadow(0 3px 10px var(--ui-glow));
         transition: filter 0.12s, transform 0.12s, background 0.12s;
       }
-      .shop-btn:hover { transform: translateY(-1px); background: var(--ui-hi); filter: drop-shadow(0 5px 16px rgba(87, 223, 247, 0.55)); }
+      .shop-btn:hover { transform: translateY(-1px); background: var(--ui-hi); filter: drop-shadow(0 5px 16px rgba(247, 148, 34, 0.55)); }
       .shop-btn.own {
         background: rgba(255, 255, 255, 0.05);
         color: var(--tx);
@@ -1875,20 +1874,20 @@
         letter-spacing: 0.24em;
         text-indent: 0.24em;
         border-radius: 9px;
-        border-color: rgba(120, 200, 225, 0.22);
+        border-color: rgba(255, 178, 92, 0.22);
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
         color: #b9c6d6;
       }
       .shop-cats button:hover {
-        color: #dff6fc;
-        border-color: rgba(87, 223, 247, 0.45);
+        color: #ffe4c4;
+        border-color: rgba(247, 148, 34, 0.45);
       }
       .shop-cats button.on {
         color: var(--ui-hi);
-        border-color: rgba(87, 223, 247, 0.7);
-        background: linear-gradient(180deg, rgba(87, 223, 247, 0.2), rgba(87, 223, 247, 0.06));
-        box-shadow: 0 0 26px rgba(87, 223, 247, 0.26),
+        border-color: rgba(247, 148, 34, 0.7);
+        background: linear-gradient(180deg, rgba(247, 148, 34, 0.2), rgba(247, 148, 34, 0.06));
+        box-shadow: 0 0 26px rgba(247, 148, 34, 0.26),
           inset 0 1px 0 rgba(255, 255, 255, 0.14),
           inset 0 -10px 22px -14px rgba(31, 159, 192, 0.35);
         text-shadow: 0 0 14px rgba(247, 148, 34, 0.55);
@@ -1917,18 +1916,18 @@
         content: "";
         flex: 1;
         height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(87, 223, 247, 0.3), transparent);
+        background: linear-gradient(90deg, transparent, rgba(247, 148, 34, 0.3), transparent);
       }
       /* Stash active-loadout summary bar */
       .stash-loadout {
         max-width: 1100px;
         margin: 0 auto 20px;
         padding: 16px 20px;
-        border: 1px solid rgba(120, 200, 225, 0.2);
+        border: 1px solid rgba(255, 178, 92, 0.2);
         border-radius: 14px;
         background:
           linear-gradient(160deg, rgba(18, 26, 32, 0.85), rgba(11, 15, 19, 0.92)),
-          radial-gradient(90% 120% at 0% 0%, rgba(87, 223, 247, 0.1), transparent 55%);
+          radial-gradient(90% 120% at 0% 0%, rgba(247, 148, 34, 0.1), transparent 55%);
       }
       .sl-title { font: 800 10px var(--hud-font); letter-spacing: 0.24em; color: var(--ui-hi); }
       .sl-slots {
@@ -1946,7 +1945,7 @@
         border-radius: 10px;
         background: rgba(0, 0, 0, 0.25);
       }
-      .sl-slot.on { border-color: rgba(87, 223, 247, 0.32); }
+      .sl-slot.on { border-color: rgba(247, 148, 34, 0.32); }
       .sl-swatch {
         flex: none;
         width: 34px;
@@ -2514,15 +2513,15 @@
         box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
         filter: drop-shadow(0 3px 12px var(--ui-glow));
       }
-      .ft-buy:hover { transform: translateY(-1px); background: var(--ui-hi); filter: drop-shadow(0 5px 18px rgba(87, 223, 247, 0.6)); }
+      .ft-buy:hover { transform: translateY(-1px); background: var(--ui-hi); filter: drop-shadow(0 5px 18px rgba(247, 148, 34, 0.6)); }
       .ft-buy.eq { background: #2fc47f; color: #052015; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3); filter: none; cursor: default; }
       .ft-buy.err { background: #e0483f; color: #2a0806; filter: none; }
       .ft-preview {
-        background: rgba(120, 200, 225, 0.06);
+        background: rgba(255, 178, 92, 0.06);
         color: var(--ui-hi);
-        box-shadow: inset 0 0 0 1px rgba(120, 200, 225, 0.4);
+        box-shadow: inset 0 0 0 1px rgba(255, 178, 92, 0.4);
       }
-      .ft-preview:hover { background: rgba(120, 200, 225, 0.14); }
+      .ft-preview:hover { background: rgba(255, 178, 92, 0.14); }
       .ft-dots { display: flex; gap: 6px; margin-top: 2px; }
       .ft-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); }
       .ft-dot.on { background: var(--rc, #ff4d3d); box-shadow: 0 0 8px var(--rc, #ff4d3d); }
@@ -2533,14 +2532,14 @@
         align-items: flex-start;
         gap: 10px;
         padding: 20px;
-        border: 1px solid rgba(120, 200, 225, 0.28);
+        border: 1px solid rgba(255, 178, 92, 0.28);
         border-radius: 14px;
         background:
           linear-gradient(160deg, rgba(20, 30, 36, 0.85), rgba(11, 15, 19, 0.92)),
-          radial-gradient(90% 70% at 80% 0%, rgba(87, 223, 247, 0.16), transparent 60%);
+          radial-gradient(90% 70% at 80% 0%, rgba(247, 148, 34, 0.16), transparent 60%);
       }
       .pa-kicker { font: 800 10px var(--hud-font); letter-spacing: 0.22em; color: var(--ui-hi); }
-      .pa-icon { height: 40px; width: auto; filter: drop-shadow(0 0 12px rgba(87, 223, 247, 0.55)); animation: sp-bob 3.2s ease-in-out infinite; }
+      .pa-icon { height: 40px; width: auto; filter: drop-shadow(0 0 12px rgba(247, 148, 34, 0.55)); animation: sp-bob 3.2s ease-in-out infinite; }
       .pa-line { margin: 0; flex: 1; font: 500 12.5px/1.5 var(--hud-font); color: var(--tx2); }
       .pa-btn {
         cursor: pointer;
@@ -2558,7 +2557,7 @@
         filter: drop-shadow(0 3px 12px var(--ui-glow));
         transition: transform 0.14s, background 0.14s, filter 0.14s;
       }
-      .pa-btn:hover { transform: translateY(-1px); background: var(--ui-hi); filter: drop-shadow(0 5px 18px rgba(87, 223, 247, 0.6)); }
+      .pa-btn:hover { transform: translateY(-1px); background: var(--ui-hi); filter: drop-shadow(0 5px 18px rgba(247, 148, 34, 0.6)); }
 
       /* ===== Complete-the-set strip ===== */
       .set-strip {
@@ -2659,15 +2658,15 @@
         border: none;
         border-radius: 0;
         clip-path: var(--chamfer);
-        background: rgba(120, 200, 225, 0.06);
+        background: rgba(255, 178, 92, 0.06);
         color: var(--ui-hi);
         font: 800 11px var(--hud-font);
         letter-spacing: 0.16em;
         text-transform: uppercase;
-        box-shadow: inset 0 0 0 1px rgba(120, 200, 225, 0.4);
+        box-shadow: inset 0 0 0 1px rgba(255, 178, 92, 0.4);
         transition: background 0.14s;
       }
-      .sh-btn:hover { background: rgba(120, 200, 225, 0.14); }
+      .sh-btn:hover { background: rgba(255, 178, 92, 0.14); }
 
       @media (max-width: 720px) {
         .shop-top { grid-template-columns: 1fr; }
@@ -3699,7 +3698,7 @@
       #overlay .card {
         position: relative;
         padding: 38px 44px 34px;
-        border: 1px solid rgba(120, 200, 225, 0.18);
+        border: 1px solid rgba(255, 178, 92, 0.18);
         border-radius: 18px;
         background: linear-gradient(180deg,
           rgba(20, 25, 30, 0.94) 0%, rgba(12, 15, 19, 0.96) 60%, rgba(10, 14, 18, 0.97) 100%);
@@ -3715,7 +3714,7 @@
         content: "";
         position: absolute;
         top: 0; left: 12%; right: 12%; height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(156, 239, 255, 0.6), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255, 205, 150, 0.6), transparent);
       }
       #overlay h1 { font-size: 20px; margin-bottom: 10px; color: var(--ui-hi); }
       #overlay #logo {
@@ -3732,9 +3731,9 @@
         text-transform: uppercase;
         margin-bottom: 18px;
         padding: 5px 12px;
-        border: 1px solid rgba(120, 200, 225, 0.3);
+        border: 1px solid rgba(255, 178, 92, 0.3);
         border-radius: 999px;
-        background: rgba(87, 223, 247, 0.08);
+        background: rgba(247, 148, 34, 0.08);
       }
       #overlay #code-error {
         min-height: 16px;
@@ -3757,8 +3756,8 @@
       }
       #overlay .card input::placeholder { color: #62727e; }
       #overlay .card input:focus {
-        border-color: rgba(87, 223, 247, 0.65);
-        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.55), 0 0 0 3px rgba(87, 223, 247, 0.14);
+        border-color: rgba(247, 148, 34, 0.65);
+        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.55), 0 0 0 3px rgba(247, 148, 34, 0.14);
       }
       #overlay kbd, #loadscreen kbd {
         display: inline-block;
@@ -3796,7 +3795,7 @@
       #deploy-btn:hover {
         background: var(--ui-hi);
         transform: translateY(-1px);
-        filter: drop-shadow(0 7px 22px rgba(87, 223, 247, 0.65));
+        filter: drop-shadow(0 7px 22px rgba(247, 148, 34, 0.65));
       }
       #deploy-btn:active { transform: translateY(1px); }
       #deploy-btn::after {
