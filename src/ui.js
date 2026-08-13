@@ -42,14 +42,26 @@ const STATUS_LABEL = {
   settings: "IN SETTINGS",
 };
 
+// `fav` indexes CLS_SIL below — the favourite-class silhouette on a podium
+// card. -1 means none, which the real client also allows.
 const BOARD = [
-  { name: "Vex", kills: 412, deaths: 180, hs: 31 },
-  { name: "Banana", kills: 388, deaths: 205, hs: 24 },
-  { name: OPERATOR, kills: 341, deaths: 199, hs: 28 },
-  { name: "Reaper", kills: 296, deaths: 240, hs: 19 },
-  { name: "Sable", kills: 271, deaths: 233, hs: 22 },
-  { name: "Koda", kills: 188, deaths: 260, hs: 12 },
+  { name: "Vex", kills: 412, deaths: 180, wins: 38, hs: 31, fav: 1 },
+  { name: "Banana", kills: 388, deaths: 205, wins: 35, hs: 24, fav: 0 },
+  { name: OPERATOR, kills: 341, deaths: 199, wins: 31, hs: 28, fav: 2 },
+  { name: "Reaper", kills: 296, deaths: 240, wins: 24, hs: 19, fav: 3 },
+  { name: "Sable", kills: 271, deaths: 233, wins: 22, hs: 22, fav: 0 },
+  { name: "Koda", kills: 188, deaths: 260, wins: 14, hs: 12, fav: -1 },
+  { name: "Mirth", kills: 154, deaths: 221, wins: 11, hs: 17, fav: 2 },
+  { name: "Halcyon", kills: 133, deaths: 190, wins: 9, hs: 15, fav: 1 },
 ];
+
+const CLS_SIL = [
+  "/icons/kf-assault.png",
+  "/icons/kf-sniper.png",
+  "/icons/kf-smg.png",
+  "/icons/kf-shotgun.png",
+];
+const CLS_NAME = ["ASSAULT", "SNIPER", "SMG", "SHOTGUN"];
 
 const SHOP = [
   { id: "tracer_glacier", kind: "tracer", name: "Glacier", hex: "#6fd9ff", cost: 150 },
@@ -194,27 +206,131 @@ function setupSocial() {
 
 // --------------------------------------------------------------------- board
 
-function paintBoard() {
-  const rows = $("mm-lb-rows");
-  if (!rows) return;
-  rows.textContent = "";
-  BOARD.forEach((r, i) => {
+const kd = (r) => (r.kills / Math.max(1, r.deaths)).toFixed(2);
+
+// Mirrors renderBoard() in the real client: a 2nd|1st|3rd podium, then a
+// header row, then the table carrying on from #4 so nobody appears twice.
+function paintBoard(rowsData = BOARD) {
+  const rowsEl = $("mm-lb-rows");
+  if (!rowsEl) return;
+  rowsEl.textContent = "";
+
+  const podium = document.createElement("div");
+  podium.className = "mm-podium";
+  for (const i of [1, 0, 2]) {
+    const r = rowsData[i];
+    if (!r) continue;
+    const pd = document.createElement("div");
+    pd.className = `pd pd${i + 1}`;
+    const card = document.createElement("div");
+    card.className = "pd-card";
+    const medal = document.createElement("div");
+    medal.className = "pd-medal";
+    if (i === 0) {
+      medal.innerHTML =
+        '<svg viewBox="0 0 24 14"><path d="M2 13 L2 4 L7.5 8 L12 1 L16.5 8 L22 4 L22 13 Z"/></svg>';
+    } else {
+      medal.textContent = String(i + 1);
+    }
+    card.append(medal);
+    if (r.fav >= 0) {
+      const sil = document.createElement("div");
+      sil.className = "pd-sil";
+      sil.style.setProperty("--sil", `url('${CLS_SIL[r.fav]}')`);
+      sil.title = CLS_NAME[r.fav];
+      card.append(sil);
+    }
+    const nm = document.createElement("div");
+    nm.className = "pd-name";
+    nm.textContent = r.name;
+    const kills = document.createElement("div");
+    kills.className = "pd-kills";
+    const kn = document.createElement("b");
+    kn.textContent = String(r.kills);
+    kills.append(kn, " KILLS");
+    const sub = document.createElement("div");
+    sub.className = "pd-sub";
+    sub.textContent = `${r.wins} W · K/D ${kd(r)} · ${r.hs} HS`;
+    card.append(nm, kills, sub);
+    const step = document.createElement("div");
+    step.className = "pd-step";
+    step.textContent = `#${i + 1}`;
+    pd.append(card, step);
+    podium.append(pd);
+  }
+  rowsEl.append(podium);
+
+  const rest = rowsData.slice(3);
+  if (!rest.length) return;
+  const hdr = document.createElement("div");
+  hdr.className = "mm-lb-row hdr";
+  for (const [txt, cls] of [
+    ["#", "mm-lb-rank"],
+    ["Operator", ""],
+    ["Kills", "mm-lb-k"],
+    ["K/D", "mm-lb-kd"],
+    ["Wins", "mm-lb-w"],
+    ["HS", "mm-lb-hs"],
+  ]) {
+    const c = document.createElement("div");
+    if (cls) c.className = cls;
+    c.textContent = txt;
+    hdr.append(c);
+  }
+  rowsEl.append(hdr);
+
+  rest.forEach((r, j) => {
+    const i = j + 3;
     const row = document.createElement("div");
-    row.className = "lb-row" + (r.name === OPERATOR ? " me" : "");
+    row.className = "mm-lb-row";
     for (const [cls, val] of [
-      ["lb-rank", `#${i + 1}`],
-      ["lb-name", r.name],
-      ["lb-k", r.kills],
-      ["lb-d", r.deaths],
-      ["lb-kd", (r.kills / Math.max(1, r.deaths)).toFixed(2)],
-      ["lb-hs", `${r.hs}%`],
+      ["mm-lb-rank", `#${i + 1}`],
+      ["", r.name],
+      ["mm-lb-k", String(r.kills)],
+      ["mm-lb-kd", kd(r)],
+      ["mm-lb-w", String(r.wins)],
+      ["mm-lb-hs", String(r.hs)],
     ]) {
-      const c = document.createElement("span");
-      c.className = cls;
-      c.textContent = String(val);
+      const c = document.createElement("div");
+      if (cls) c.className = cls;
+      c.textContent = val;
       row.append(c);
     }
-    rows.append(row);
+    rowsEl.append(row);
+  });
+}
+
+// Mode/period buttons: re-render with scaled numbers so switching visibly
+// does something, the way it would against a real stats server.
+function setupBoardControls() {
+  const scaled = (f) =>
+    BOARD.map((r) => ({
+      ...r,
+      kills: Math.round(r.kills * f),
+      deaths: Math.round(r.deaths * f),
+      wins: Math.round(r.wins * f),
+    }));
+  const factors = { life: 1, weekly: 0.22, daily: 0.05 };
+  let period = "life";
+  let mode = "tdm";
+  const redraw = () => paintBoard(scaled(factors[period] * (mode === "ffa" ? 0.6 : 1)));
+  document.querySelectorAll(".mm-periods button").forEach((b) => {
+    on(b, "click", () => {
+      document
+        .querySelectorAll(".mm-periods button")
+        .forEach((x) => x.classList.toggle("on", x === b));
+      period = b.dataset.period || "life";
+      redraw();
+    });
+  });
+  document.querySelectorAll(".mm-modesel button").forEach((b) => {
+    on(b, "click", () => {
+      document
+        .querySelectorAll(".mm-modesel button")
+        .forEach((x) => x.classList.toggle("on", x === b));
+      mode = b.dataset.lbmode || "tdm";
+      redraw();
+    });
   });
 }
 
@@ -371,6 +487,7 @@ function boot() {
   setupSettings();
   paintHeader();
   paintBoard();
+  setupBoardControls();
   paintShop();
   paintStash();
   // The inline guard in index.html sets .tomenu when credentials are saved.
