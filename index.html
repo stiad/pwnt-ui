@@ -42,6 +42,9 @@
         --ui-deep: #1f9fc0;
         --ui-ink: #032230;
         --ui-glow: rgba(87, 223, 247, 0.4);
+        /* Angular corner cut shared by all tactical buttons — kills the
+           rounded "web button" look and echoes the HUD's machined framing. */
+        --chamfer: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
         --team-red: #ff5d57;
         --team-blue: #55a8ff;
         --hp: #5ef2c2;
@@ -1234,37 +1237,40 @@
         transition: color 0.14s, text-shadow 0.14s;
       }
       .mm-mode:not(.soon):hover .mm-mode-hint {
-        color: #ffc073;
-        text-shadow: 0 0 12px rgba(247, 148, 34, 0.5);
+        color: var(--ui-hi);
+        text-shadow: 0 0 12px rgba(87, 223, 247, 0.5);
       }
       .mm-mode:not(.soon):hover {
-        border-color: rgba(247, 148, 34, 0.55);
-        box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5), 0 0 26px rgba(247, 148, 34, 0.2);
+        border-color: rgba(87, 223, 247, 0.55);
+        box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5), 0 0 26px rgba(87, 223, 247, 0.2);
       }
       .mm-mode-name { font: 700 30px/1.1 var(--hud-font); letter-spacing: 0.08em; }
       .mm-mode-sub { font: 500 13.5px var(--hud-font); letter-spacing: 0.08em; color: rgba(233, 240, 247, 0.9); }
       .mm-mode-go {
         margin-top: 10px;
         align-self: flex-start;
-        padding: 8px 22px;
-        border: 1px solid rgba(255, 190, 110, 0.5);
-        border-radius: 6px;
+        padding: 10px 26px;
+        border: none;
+        border-radius: 0;
+        clip-path: var(--chamfer);
         font: 800 12px var(--hud-font);
         letter-spacing: 0.28em;
         text-indent: 0.28em;
-        background: linear-gradient(180deg, #ffb35c, #c2610a);
-        color: #241102;
+        text-transform: uppercase;
+        background: var(--ui);
+        color: var(--ui-ink);
         cursor: pointer;
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -2px 0 rgba(90, 40, 0, 0.45);
-        transition: filter 0.12s, transform 0.12s, box-shadow 0.12s;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+        filter: drop-shadow(0 3px 12px var(--ui-glow));
+        transition: filter 0.12s, transform 0.12s, background 0.12s;
       }
       button.mm-mode-go:hover {
-        filter: brightness(1.08);
-        box-shadow: 0 6px 18px rgba(240, 139, 31, 0.4),
-          inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 -2px 0 rgba(90, 40, 0, 0.45);
+        transform: translateY(-1px);
+        background: var(--ui-hi);
+        filter: drop-shadow(0 5px 18px rgba(87, 223, 247, 0.6));
       }
       .mm-mode.soon { opacity: 0.45; cursor: default; }
-      .mm-mode.soon .mm-mode-go { background: rgba(255, 255, 255, 0.1); color: var(--tx2); box-shadow: none; }
+      .mm-mode.soon .mm-mode-go { background: rgba(255, 255, 255, 0.1); color: var(--tx2); box-shadow: none; filter: none; }
 
       /* Tactical HUD framing on the hero deploy tiles: corner brackets that
          ignite copper and pull inward on hover, a mode index tag, and a slow
@@ -1822,34 +1828,42 @@
         display: block;
         width: 100%;
         margin-top: 10px;
-        padding: 9px 0;
-        border: 1px solid rgba(156, 239, 255, 0.5);
-        border-radius: 8px;
-        background: linear-gradient(180deg, var(--ui-hi), var(--ui-deep));
+        padding: 10px 0;
+        border: none;
+        border-radius: 0;
+        clip-path: var(--chamfer);
+        background: var(--ui);
         color: var(--ui-ink);
         font: 800 13.5px var(--hud-font);
         letter-spacing: 0.2em;
         text-indent: 0.2em;
+        text-transform: uppercase;
         cursor: pointer;
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
-        transition: filter 0.12s, transform 0.12s, box-shadow 0.12s;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+        filter: drop-shadow(0 3px 10px var(--ui-glow));
+        transition: filter 0.12s, transform 0.12s, background 0.12s;
       }
-      .shop-btn:hover { filter: brightness(1.05); transform: translateY(-1px); box-shadow: 0 4px 18px var(--ui-glow), inset 0 1px 0 rgba(255, 255, 255, 0.4); }
+      .shop-btn:hover { transform: translateY(-1px); background: var(--ui-hi); filter: drop-shadow(0 5px 16px rgba(87, 223, 247, 0.55)); }
       .shop-btn.own {
-        background: rgba(255, 255, 255, 0.06);
-        border-color: rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.05);
         color: var(--tx);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+        filter: none;
       }
+      .shop-btn.own:hover { background: rgba(255, 255, 255, 0.1); filter: none; }
       .shop-btn.eq {
         background: rgba(53, 208, 127, 0.14);
-        border-color: rgba(53, 208, 127, 0.5);
         color: #35d07f;
+        box-shadow: inset 0 0 0 1px rgba(53, 208, 127, 0.5);
+        filter: none;
         cursor: default;
       }
+      .shop-btn.eq:hover { transform: none; background: rgba(53, 208, 127, 0.14); filter: none; }
       .shop-btn.err {
         background: rgba(255, 93, 87, 0.15);
-        border-color: rgba(255, 93, 87, 0.5);
         color: #ff8d88;
+        box-shadow: inset 0 0 0 1px rgba(255, 93, 87, 0.5);
+        filter: none;
       }
       #stash-grid, #shop-grid { max-width: 1100px; margin: 0 auto; }
       .shop-cats { justify-content: center; margin-bottom: 26px; gap: 10px; }
@@ -2472,10 +2486,11 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 4px 11px;
-        border-radius: 999px;
+        padding: 5px 12px;
+        border-radius: 0;
+        clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
         border: 1px solid rgba(255, 255, 255, 0.14);
-        background: rgba(0, 0, 0, 0.35);
+        background: rgba(0, 0, 0, 0.4);
         font: 700 10.5px var(--hud-font);
         letter-spacing: 0.14em;
         color: #ffd7ae;
@@ -2484,27 +2499,30 @@
       .ft-actions { display: flex; gap: 10px; margin-top: 4px; }
       .ft-buy, .ft-preview {
         cursor: pointer;
-        padding: 11px 18px;
-        border-radius: 9px;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 0;
+        clip-path: var(--chamfer);
         font: 800 12px var(--hud-font);
-        letter-spacing: 0.12em;
-        transition: transform 0.14s, box-shadow 0.14s, background 0.14s;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        transition: transform 0.14s, filter 0.14s, background 0.14s;
       }
       .ft-buy {
-        border: none;
         color: var(--ui-ink);
-        background: linear-gradient(180deg, var(--ui-hi), var(--ui-deep));
-        box-shadow: 0 0 18px var(--ui-glow), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        background: var(--ui);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+        filter: drop-shadow(0 3px 12px var(--ui-glow));
       }
-      .ft-buy:hover { transform: translateY(-1px); box-shadow: 0 4px 24px rgba(87, 223, 247, 0.6); }
-      .ft-buy.eq { background: linear-gradient(180deg, #45e29b, #1f9c63); color: #062416; box-shadow: 0 0 16px rgba(53, 208, 127, 0.5); cursor: default; }
-      .ft-buy.err { background: linear-gradient(180deg, #ff7d76, #d33b34); color: #2a0806; }
+      .ft-buy:hover { transform: translateY(-1px); background: var(--ui-hi); filter: drop-shadow(0 5px 18px rgba(87, 223, 247, 0.6)); }
+      .ft-buy.eq { background: #2fc47f; color: #052015; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3); filter: none; cursor: default; }
+      .ft-buy.err { background: #e0483f; color: #2a0806; filter: none; }
       .ft-preview {
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        background: rgba(255, 255, 255, 0.04);
-        color: var(--tx);
+        background: rgba(120, 200, 225, 0.06);
+        color: var(--ui-hi);
+        box-shadow: inset 0 0 0 1px rgba(120, 200, 225, 0.4);
       }
-      .ft-preview:hover { background: rgba(255, 255, 255, 0.09); }
+      .ft-preview:hover { background: rgba(120, 200, 225, 0.14); }
       .ft-dots { display: flex; gap: 6px; margin-top: 2px; }
       .ft-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); }
       .ft-dot.on { background: var(--rc, #ff4d3d); box-shadow: 0 0 8px var(--rc, #ff4d3d); }
@@ -2527,17 +2545,20 @@
       .pa-btn {
         cursor: pointer;
         width: 100%;
-        padding: 11px;
+        padding: 12px;
         border: none;
-        border-radius: 9px;
-        background: linear-gradient(180deg, var(--ui-hi), var(--ui-deep));
+        border-radius: 0;
+        clip-path: var(--chamfer);
+        background: var(--ui);
         color: var(--ui-ink);
         font: 800 12px var(--hud-font);
-        letter-spacing: 0.14em;
-        box-shadow: 0 0 16px var(--ui-glow), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-        transition: transform 0.14s;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+        filter: drop-shadow(0 3px 12px var(--ui-glow));
+        transition: transform 0.14s, background 0.14s, filter 0.14s;
       }
-      .pa-btn:hover { transform: translateY(-1px); }
+      .pa-btn:hover { transform: translateY(-1px); background: var(--ui-hi); filter: drop-shadow(0 5px 18px rgba(87, 223, 247, 0.6)); }
 
       /* ===== Complete-the-set strip ===== */
       .set-strip {
@@ -2599,17 +2620,20 @@
       .ss-btn {
         cursor: pointer;
         flex: none;
-        padding: 12px 18px;
+        padding: 13px 20px;
         border: none;
-        border-radius: 9px;
-        background: linear-gradient(180deg, #ff8a6b, #d33b34);
+        border-radius: 0;
+        clip-path: var(--chamfer);
+        background: #ff5d57;
         color: #2a0806;
         font: 800 12px var(--hud-font);
-        letter-spacing: 0.1em;
-        box-shadow: 0 0 16px rgba(255, 93, 87, 0.4);
-        transition: transform 0.14s;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+        filter: drop-shadow(0 3px 12px rgba(255, 93, 87, 0.4));
+        transition: transform 0.14s, background 0.14s, filter 0.14s;
       }
-      .ss-btn:hover { transform: translateY(-1px); }
+      .ss-btn:hover { transform: translateY(-1px); background: #ff7a6b; filter: drop-shadow(0 5px 18px rgba(255, 93, 87, 0.6)); }
 
       /* ===== Next shipment bar ===== */
       .ship-bar {
@@ -2631,16 +2655,19 @@
       .sh-btn {
         cursor: pointer;
         flex: none;
-        padding: 10px 16px;
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.04);
-        color: var(--tx);
+        padding: 11px 18px;
+        border: none;
+        border-radius: 0;
+        clip-path: var(--chamfer);
+        background: rgba(120, 200, 225, 0.06);
+        color: var(--ui-hi);
         font: 800 11px var(--hud-font);
-        letter-spacing: 0.14em;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        box-shadow: inset 0 0 0 1px rgba(120, 200, 225, 0.4);
         transition: background 0.14s;
       }
-      .sh-btn:hover { background: rgba(255, 255, 255, 0.1); }
+      .sh-btn:hover { background: rgba(120, 200, 225, 0.14); }
 
       @media (max-width: 720px) {
         .shop-top { grid-template-columns: 1fr; }
@@ -3750,30 +3777,26 @@
         position: relative;
         overflow: hidden;
         margin-top: 18px;
-        width: 230px;
-        padding: 15px 24px;
-        border: 1px solid rgba(156, 239, 255, 0.5);
-        border-radius: 11px;
-        background: linear-gradient(180deg, var(--ui-hi) 0%, var(--ui) 46%, var(--ui-deep) 100%);
+        width: 240px;
+        padding: 16px 24px;
+        border: none;
+        border-radius: 0;
+        clip-path: var(--chamfer);
+        background: var(--ui);
         color: var(--ui-ink);
         font: 800 15px/1 ui-sans-serif, system-ui, sans-serif;
-        letter-spacing: 0.32em;
+        letter-spacing: 0.34em;
+        text-indent: 0.34em;
         text-transform: uppercase;
-        text-shadow: 0 1px 0 rgba(230, 250, 255, 0.5);
         cursor: pointer;
-        box-shadow:
-          0 6px 24px var(--ui-glow),
-          inset 0 1px 0 rgba(255, 255, 255, 0.55),
-          inset 0 -2px 0 rgba(6, 60, 74, 0.4);
-        transition: transform 0.12s, box-shadow 0.12s, filter 0.12s;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4), inset 0 -3px 0 rgba(6, 60, 74, 0.35);
+        filter: drop-shadow(0 4px 16px var(--ui-glow));
+        transition: transform 0.12s, filter 0.12s, background 0.12s;
       }
       #deploy-btn:hover {
-        filter: brightness(1.06);
+        background: var(--ui-hi);
         transform: translateY(-1px);
-        box-shadow:
-          0 10px 34px rgba(87, 223, 247, 0.55),
-          inset 0 1px 0 rgba(255, 255, 255, 0.6),
-          inset 0 -2px 0 rgba(6, 60, 74, 0.4);
+        filter: drop-shadow(0 7px 22px rgba(87, 223, 247, 0.65));
       }
       #deploy-btn:active { transform: translateY(1px); }
       #deploy-btn::after {
@@ -3782,7 +3805,7 @@
         top: -40%; bottom: -40%; left: -60%;
         width: 34%;
         transform: skewX(-22deg);
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
         animation: dp-sheen 3.4s ease-in-out infinite;
       }
       @keyframes dp-sheen {
