@@ -709,9 +709,9 @@ function setupAmbient() {
     x: rand(0, W),
     y: seed ? rand(0, H) : H + rand(0, 60),
     r: rand(1.1, 3.2),
-    vy: rand(10, 34),        // px/sec upward
-    drift: rand(-10, 10),    // horizontal sway amplitude
-    sway: rand(0.3, 1.1),    // sway speed
+    vy: rand(45, 105),       // px/sec upward
+    drift: rand(-16, 16),    // horizontal sway amplitude
+    sway: rand(0.6, 1.8),    // sway speed
     phase: rand(0, Math.PI * 2),
     flick: rand(6, 13),      // flicker speed
     life: rand(4, 11),
