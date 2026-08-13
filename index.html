@@ -1217,7 +1217,7 @@
       .mm-mode-name {
         text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85), 0 0 2px rgba(0, 0, 0, 0.6);
       }
-      .mm-mode-sub { text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9); }
+      .mm-mode-sub { text-shadow: 0 1px 6px rgba(0, 0, 0, 0.95), 0 0 14px rgba(0, 0, 0, 0.8); }
       .mm-mode-hint {
         margin-top: auto;
         padding-top: 14px;
@@ -1235,7 +1235,7 @@
         box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5), 0 0 26px rgba(247, 148, 34, 0.2);
       }
       .mm-mode-name { font: 700 30px/1.1 var(--hud-font); letter-spacing: 0.08em; }
-      .mm-mode-sub { font: 500 13.5px var(--hud-font); letter-spacing: 0.08em; color: var(--tx2); }
+      .mm-mode-sub { font: 500 13.5px var(--hud-font); letter-spacing: 0.08em; color: rgba(233, 240, 247, 0.9); }
       .mm-mode-go {
         margin-top: 10px;
         align-self: flex-start;
@@ -1292,17 +1292,15 @@
         content: "";
         position: absolute;
         inset: 0;
-        opacity: 0;
-        background: linear-gradient(180deg, transparent 45%, rgba(255, 205, 140, 0.5) 50%, transparent 55%);
-        background-size: 100% 220%;
-        background-position: 0 -60%;
+        background: linear-gradient(105deg, transparent 42%, rgba(255, 224, 178, 0.55) 50%, transparent 58%);
+        background-size: 220% 100%;
+        background-position: 150% 0;
         mix-blend-mode: screen;
-        transition: opacity 0.3s;
       }
-      .mm-mode:not(.soon):hover .mm-mode-frame::before { opacity: 1; animation: mm-scan 2s linear infinite; }
-      @keyframes mm-scan {
-        from { background-position: 0 -60%; }
-        to { background-position: 0 160%; }
+      .mm-mode:not(.soon):hover .mm-mode-frame::before { animation: mm-sheen 0.65s cubic-bezier(0.3, 0, 0.2, 1); }
+      @keyframes mm-sheen {
+        from { background-position: 150% 0; }
+        to { background-position: -50% 0; }
       }
       @media (prefers-reduced-motion: reduce) {
         .mm-mode-frame::before { animation: none; }
