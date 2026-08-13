@@ -862,6 +862,27 @@ function shipBar() {
   return bar;
 }
 
+// Equipped-gear summary shown at the top of the stash.
+function stashLoadout() {
+  const bar = mk("div", "stash-loadout");
+  bar.append(mk("span", "sl-title", "ACTIVE LOADOUT"));
+  const slots = mk("div", "sl-slots");
+  const all = [...SHOP_DEFAULTS, ...SHOP_CATALOG];
+  for (const [kind, label] of KINDS) {
+    const item = all.find((i) => i.id === equip[kind]);
+    const slot = mk("div", "sl-slot" + (item ? " on" : ""));
+    const sw = mk("span", "sl-swatch");
+    sw.style.setProperty("--c", item && item.hex.startsWith("#") ? item.hex : "#5a6572");
+    slot.append(sw);
+    const txt = mk("div", "sl-txt");
+    txt.append(mk("span", "sl-kind", label), mk("span", "sl-name", item ? item.name : "\u2014"));
+    slot.append(txt);
+    slots.append(slot);
+  }
+  bar.append(slots);
+  return bar;
+}
+
 // One render for both panes, same as the real client's render().
 function renderShop() {
   const shop = $("shop-grid");
@@ -899,6 +920,7 @@ function renderShop() {
       ...SHOP_DEFAULTS.filter((i) => i.kind === kind),
       ...owned.map((id) => SHOP_CATALOG.find((i) => i.id === id)).filter((i) => i && i.kind === kind),
     ];
+    stash.append(stashLoadout());
     const counts = new Map(KINDS.map(([k]) => [k, stashItems(k).length]));
     stash.append(chipRow(stashCat, counts, (k) => { stashCat = k; renderShop(); }));
     const grid = document.createElement("div");
