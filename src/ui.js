@@ -741,7 +741,7 @@ function setupAmbient() {
     canvas.style.width = W + "px";
     canvas.style.height = H + "px";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const emberCount = Math.round(Math.min(45, (W * H) / 42000));
+    const emberCount = Math.round(Math.min(24, (W * H) / 80000));
     embers = Array.from({ length: emberCount }, () => makeEmber(true));
     glows = Array.from({ length: 5 }, makeGlow);
   };
@@ -766,18 +766,18 @@ function setupAmbient() {
     const fade = Math.min(1, e.age / 0.6) * Math.max(0, 1 - e.age / e.life);
     const rise = 1 - e.y / H;
     const flick = 0.75 + 0.25 * Math.sin(t * e.flick + e.phase);
-    const a = fade * (0.65 + rise * 0.35) * flick;
+    const a = fade * (0.8 + rise * 0.2) * flick;
     if (a <= 0) return;
     const x = e.x;
 
     // Outer halo — tight so it glows without smearing into haze.
     const halo = ctx.createRadialGradient(x, e.y, 0, x, e.y, e.r * 3);
     if (e.hot) {
-      halo.addColorStop(0, `rgba(255, 220, 150, ${a * 0.7})`);
-      halo.addColorStop(0.5, `rgba(255, 150, 60, ${a * 0.35})`);
+      halo.addColorStop(0, `rgba(255, 235, 190, ${Math.min(1, a)})`);
+      halo.addColorStop(0.5, `rgba(255, 165, 70, ${a * 0.5})`);
     } else {
-      halo.addColorStop(0, `rgba(255, 170, 80, ${a * 0.6})`);
-      halo.addColorStop(0.5, `rgba(230, 120, 30, ${a * 0.28})`);
+      halo.addColorStop(0, `rgba(255, 190, 100, ${a * 0.85})`);
+      halo.addColorStop(0.5, `rgba(240, 135, 40, ${a * 0.42})`);
     }
     halo.addColorStop(1, "rgba(200, 80, 15, 0)");
     ctx.fillStyle = halo;
@@ -787,8 +787,8 @@ function setupAmbient() {
 
     // Bright solid core — this is what makes it read as a live spark.
     ctx.fillStyle = e.hot
-      ? `rgba(255, 245, 225, ${Math.min(1, a * 1.15)})`
-      : `rgba(255, 210, 150, ${Math.min(1, a)})`;
+      ? `rgba(255, 250, 235, ${Math.min(1, a * 1.4)})`
+      : `rgba(255, 225, 175, ${Math.min(1, a * 1.25)})`;
     ctx.beginPath();
     ctx.arc(x, e.y, e.r, 0, Math.PI * 2);
     ctx.fill();
