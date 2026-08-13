@@ -709,7 +709,7 @@ function setupAmbient() {
   const makeEmber = (seed = false) => ({
     x: rand(0, W),
     y: seed ? rand(0, H) : H + rand(0, 60),
-    r: rand(1.1, 3.2),
+    r: rand(0.8, 2.3),
     vy: rand(480, 780),      // px/sec upward — fast rise
     vx: rand(-120, 120),     // px/sec sideways — sets the arc's launch angle
     ax: rand(-130, 130),     // sideways accel — this is what bends the path
