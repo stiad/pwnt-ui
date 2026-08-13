@@ -708,14 +708,15 @@ function setupAmbient() {
   const makeEmber = (seed = false) => ({
     x: rand(0, W),
     y: seed ? rand(0, H) : H + rand(0, 60),
-    r: rand(0.7, 2.6),
+    r: rand(1.1, 3.2),
     vy: rand(10, 34),        // px/sec upward
     drift: rand(-10, 10),    // horizontal sway amplitude
     sway: rand(0.3, 1.1),    // sway speed
     phase: rand(0, Math.PI * 2),
+    flick: rand(6, 13),      // flicker speed
     life: rand(4, 11),
     age: seed ? rand(0, 6) : 0,
-    hot: Math.random() < 0.12, // brighter, whiter sparks
+    hot: Math.random() < 0.28, // brighter, whiter sparks
   });
 
   const makeGlow = () => ({
@@ -762,23 +763,34 @@ function setupAmbient() {
   };
 
   const drawEmber = (e, t) => {
-    const fade = Math.min(1, e.age / 0.8) * Math.max(0, 1 - e.age / e.life);
+    const fade = Math.min(1, e.age / 0.6) * Math.max(0, 1 - e.age / e.life);
     const rise = 1 - e.y / H;
-    const a = fade * (0.35 + rise * 0.55);
+    const flick = 0.75 + 0.25 * Math.sin(t * e.flick + e.phase);
+    const a = fade * (0.65 + rise * 0.35) * flick;
     if (a <= 0) return;
     const x = e.x + Math.sin(t * e.sway + e.phase) * e.drift;
-    const grad = ctx.createRadialGradient(x, e.y, 0, x, e.y, e.r * 4);
+
+    // Outer halo — tight so it glows without smearing into haze.
+    const halo = ctx.createRadialGradient(x, e.y, 0, x, e.y, e.r * 3);
     if (e.hot) {
-      grad.addColorStop(0, `rgba(255, 240, 210, ${a})`);
-      grad.addColorStop(0.4, `rgba(255, 180, 90, ${a * 0.8})`);
+      halo.addColorStop(0, `rgba(255, 220, 150, ${a * 0.7})`);
+      halo.addColorStop(0.5, `rgba(255, 150, 60, ${a * 0.35})`);
     } else {
-      grad.addColorStop(0, `rgba(255, 190, 110, ${a})`);
-      grad.addColorStop(0.4, `rgba(247, 148, 34, ${a * 0.7})`);
+      halo.addColorStop(0, `rgba(255, 170, 80, ${a * 0.6})`);
+      halo.addColorStop(0.5, `rgba(230, 120, 30, ${a * 0.28})`);
     }
-    grad.addColorStop(1, "rgba(200, 90, 20, 0)");
-    ctx.fillStyle = grad;
+    halo.addColorStop(1, "rgba(200, 80, 15, 0)");
+    ctx.fillStyle = halo;
     ctx.beginPath();
-    ctx.arc(x, e.y, e.r * 4, 0, Math.PI * 2);
+    ctx.arc(x, e.y, e.r * 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Bright solid core — this is what makes it read as a live spark.
+    ctx.fillStyle = e.hot
+      ? `rgba(255, 245, 225, ${Math.min(1, a * 1.15)})`
+      : `rgba(255, 210, 150, ${Math.min(1, a)})`;
+    ctx.beginPath();
+    ctx.arc(x, e.y, e.r, 0, Math.PI * 2);
     ctx.fill();
   };
 
