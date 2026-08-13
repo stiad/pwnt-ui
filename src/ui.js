@@ -709,13 +709,13 @@ function setupAmbient() {
     x: rand(0, W),
     y: seed ? rand(0, H) : H + rand(0, 60),
     r: rand(1.1, 3.2),
-    vy: rand(45, 105),       // px/sec upward
+    vy: rand(140, 260),      // px/sec upward — fast rise
     vx: rand(-45, 45),       // px/sec sideways — sets the arc's launch angle
     ax: rand(-40, 40),       // sideways accel — this is what bends the path
     phase: rand(0, Math.PI * 2),
     flick: rand(6, 13),      // flicker speed
-    life: rand(1.6, 7),      // wide spread so they wink out at random heights
-    age: seed ? rand(0, 3) : 0,
+    life: rand(1.1, 3.2),    // short so they flare up and fade out fast
+    age: seed ? rand(0, 2) : 0,
     hot: Math.random() < 0.28, // brighter, whiter sparks
   });
 
@@ -741,7 +741,7 @@ function setupAmbient() {
     canvas.style.width = W + "px";
     canvas.style.height = H + "px";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const emberCount = Math.round(Math.min(120, (W * H) / 14000));
+    const emberCount = Math.round(Math.min(45, (W * H) / 42000));
     embers = Array.from({ length: emberCount }, () => makeEmber(true));
     glows = Array.from({ length: 5 }, makeGlow);
   };
