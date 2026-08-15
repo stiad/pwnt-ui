@@ -2100,17 +2100,24 @@
           drop-shadow(0 0 12px color-mix(in srgb, var(--rc) 22%, transparent));
       }
       .shop-card[class*="tier-"] .shop-prev {
-        background: radial-gradient(ellipse at 50% 60%,
-          color-mix(in srgb, var(--rc) 10%, transparent), transparent 72%);
-        border-radius: 8px;
+        background:
+          radial-gradient(ellipse at 50% 55%, color-mix(in srgb, var(--rc) 16%, transparent), transparent 70%),
+          linear-gradient(180deg, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.5));
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rc) 30%, rgba(255, 255, 255, 0.06)),
+          inset 0 10px 22px rgba(0, 0, 0, 0.45);
       }
       .shop-card .tier-tag {
         position: absolute;
-        top: 9px;
-        left: 11px;
+        top: 20px;
+        left: 22px;
+        z-index: 2;
+        padding: 3px 7px;
         font: 800 8px var(--hud-font);
-        letter-spacing: 0.24em;
+        letter-spacing: 0.22em;
         color: var(--rc);
+        background: color-mix(in srgb, var(--rc) 12%, rgba(0, 0, 0, 0.55));
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rc) 45%, transparent);
+        clip-path: var(--chamfer);
         text-shadow: 0 0 9px color-mix(in srgb, var(--rc) 70%, transparent);
       }
       .shop-card.tier-legendary {
@@ -2126,11 +2133,17 @@
       }
       .shop-card.equipped { box-shadow: inset 0 0 0 1px rgba(53, 208, 127, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.07); }
       .shop-prev {
-        height: 54px;
+        position: relative;
+        height: 72px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
+        clip-path: var(--chamfer);
+        background:
+          radial-gradient(ellipse at 50% 55%, rgba(247, 148, 34, 0.1), transparent 70%),
+          linear-gradient(180deg, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.5));
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), inset 0 10px 22px rgba(0, 0, 0, 0.45);
       }
       .shop-prev .streak {
         width: 130px;
