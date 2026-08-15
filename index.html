@@ -1102,6 +1102,37 @@
       .mm-body:has(> #mm-social.on)::before { flex: 0; }
       .mm-pane.on { display: block; animation: tp-fade 0.25s ease both; }
 
+      /* Mobile navigation: below 860px the centered tab row would overflow,
+         so it collapses behind a hamburger and drops down as a full-width menu. */
+      .mm-burger { display: none; }
+      @media (max-width: 860px) {
+        .mm-head { position: relative; flex-wrap: wrap; gap: 12px 14px; }
+        .mm-logo { height: 38px; }
+        .mm-acct { flex-direction: row; gap: 10px; }
+        .mm-burger {
+          order: 5; display: inline-flex; flex-direction: column; justify-content: center; gap: 5px;
+          width: 46px; height: 40px; padding: 0 11px; cursor: pointer;
+          border: none; border-radius: 0; clip-path: var(--chamfer);
+          background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+          box-shadow: inset 0 0 0 1px rgba(255, 178, 92, 0.24);
+        }
+        .mm-burger span { height: 2px; width: 100%; border-radius: 2px; background: #ffc073; transition: transform 0.2s ease, opacity 0.2s ease; }
+        .mm-head.nav-open .mm-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .mm-head.nav-open .mm-burger span:nth-child(2) { opacity: 0; }
+        .mm-head.nav-open .mm-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .mm-tabs {
+          display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 60;
+          flex: none; flex-direction: column; gap: 4px;
+          padding: 10px clamp(16px, 4vw, 60px) 16px;
+          background: linear-gradient(180deg, rgba(14, 12, 10, 0.98), rgba(10, 9, 7, 0.98));
+          border-bottom: 1px solid rgba(255, 178, 92, 0.2);
+          box-shadow: 0 26px 44px -18px rgba(0, 0, 0, 0.85);
+          animation: loDrop 0.18s ease;
+        }
+        .mm-head.nav-open .mm-tabs { display: flex; }
+        .mm-tabs button { width: 100%; justify-content: flex-start; padding: 14px 18px; font-size: 15px; }
+      }
+
       /* Tab-switch choreography: the pane fades in, then its blocks rise and
          settle in a quick cascade so each tab feels assembled, not dumped. */
       @keyframes mm-rise {
@@ -5497,6 +5528,7 @@
               LOG OUT
             </button>
           </div>
+          <button id="mm-burger" class="mm-burger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
         </div>
         <div class="mm-body">
           <div class="mm-pane on" id="mm-play">

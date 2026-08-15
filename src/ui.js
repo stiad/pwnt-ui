@@ -199,12 +199,25 @@ function setupTabs() {
     board: $("mm-board"),
     social: $("mm-social"),
   };
+  const head = document.querySelector(".mm-head");
+  const burger = $("mm-burger");
+  const closeNav = () => {
+    if (head) head.classList.remove("nav-open");
+    if (burger) burger.setAttribute("aria-expanded", "false");
+  };
+  if (burger && head) {
+    on(burger, "click", () => {
+      const open = head.classList.toggle("nav-open");
+      burger.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  }
   tabs.forEach((t) => {
     on(t, "click", () => {
       tabs.forEach((x) => x.classList.toggle("on", x === t));
       for (const [k, p] of Object.entries(panes)) {
         if (p) p.classList.toggle("on", k === t.dataset.tab);
       }
+      closeNav();
     });
   });
 }
