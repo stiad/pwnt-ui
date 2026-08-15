@@ -2089,7 +2089,7 @@
         filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.45));
         transition: box-shadow 0.15s, filter 0.15s, transform 0.15s;
       }
-      .shop-card:hover { transform: translateY(-3px); }
+      .shop-card:hover { transform: translateY(-4px); }
       .shop-card::before {
         content: "";
         position: absolute;
@@ -2154,7 +2154,13 @@
       }
       .shop-card:hover {
         box-shadow: inset 0 0 0 1px rgba(247, 148, 34, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.07);
-        filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 16px rgba(247, 148, 34, 0.25));
+        filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 16px rgba(247, 148, 34, 0.25));
+      }
+      .shop-card[class*="tier-"]:hover {
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rc) 72%, transparent),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.5))
+          drop-shadow(0 0 22px color-mix(in srgb, var(--rc) 42%, transparent));
       }
       .shop-card.equipped { box-shadow: inset 0 0 0 1px rgba(53, 208, 127, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.07); }
       .shop-prev {
@@ -2176,6 +2182,81 @@
         max-height: 100%;
         object-fit: contain;
         filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.55));
+      }
+      /* Tracer preview as the card hero: tall, near-black, glow bleeds within card */
+      .shop-card .shop-prev.tracer {
+        height: 100px;
+        margin-bottom: 12px;
+        overflow: visible;
+        clip-path: none;
+        background:
+          radial-gradient(130% 96% at 50% 52%, color-mix(in srgb, var(--c) 24%, transparent), transparent 60%),
+          radial-gradient(120% 80% at 50% 118%, color-mix(in srgb, var(--rc, var(--c)) 14%, transparent), transparent 72%),
+          linear-gradient(180deg, #070707, #000);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+        transition: box-shadow 0.18s, filter 0.18s;
+      }
+      .shop-card .shop-prev.tracer .tracer-img {
+        width: 116%;
+        max-width: none;
+        max-height: 132%;
+        height: auto;
+        object-fit: contain;
+        filter: drop-shadow(0 0 13px color-mix(in srgb, var(--c) 60%, transparent))
+          drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55));
+        will-change: transform, opacity, filter;
+      }
+      .shop-card.tier-epic .shop-prev.tracer .tracer-img {
+        filter: drop-shadow(0 0 18px color-mix(in srgb, var(--c) 75%, transparent))
+          drop-shadow(0 2px 8px rgba(0, 0, 0, 0.55));
+      }
+      /* Secondary bloom that flashes as the projectile passes */
+      .shop-card .shop-prev.tracer::after {
+        content: "";
+        position: absolute;
+        inset: -20% -10%;
+        pointer-events: none;
+        background: radial-gradient(52% 60% at 62% 50%, color-mix(in srgb, var(--c) 48%, transparent), transparent 70%);
+        opacity: 0;
+      }
+      .shop-card:hover .shop-prev.tracer {
+        box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 26%, rgba(255, 255, 255, 0.06)),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        filter: brightness(1.12);
+      }
+      .shop-card:hover .shop-prev.tracer .tracer-img {
+        animation: tracer-fire 0.55s cubic-bezier(0.2, 0.72, 0.2, 1);
+      }
+      .shop-card:hover .shop-prev.tracer::after {
+        animation: tracer-flash 0.6s ease-out;
+      }
+      @keyframes tracer-fire {
+        0% {
+          transform: translateX(-24%) scale(1.0);
+          opacity: 0.32;
+          filter: brightness(1) drop-shadow(0 0 6px color-mix(in srgb, var(--c) 40%, transparent));
+        }
+        55% {
+          transform: translateX(2%) scale(1.06);
+          opacity: 1;
+          filter: brightness(1.65) drop-shadow(0 0 24px color-mix(in srgb, var(--c) 85%, transparent));
+        }
+        100% {
+          transform: translateX(0) scale(1.04);
+          opacity: 1;
+          filter: brightness(1.12) drop-shadow(0 0 14px color-mix(in srgb, var(--c) 60%, transparent));
+        }
+      }
+      @keyframes tracer-flash {
+        0% { opacity: 0; }
+        45% { opacity: 0.55; }
+        100% { opacity: 0; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .shop-card:hover { transform: none; }
+        .shop-card:hover .shop-prev.tracer .tracer-img,
+        .shop-card:hover .shop-prev.tracer::after,
+        .shop-card.tier-legendary { animation: none; }
       }
       .shop-prev .streak {
         width: 130px;
@@ -2204,10 +2285,20 @@
         white-space: nowrap;
       }
       .shop-name {
-        font: 700 16px var(--hud-font);
-        letter-spacing: 0.14em;
+        margin-top: 4px;
+        font: 700 18px var(--hud-font);
+        letter-spacing: 0.12em;
         text-transform: uppercase;
         color: var(--tx);
+        line-height: 1.15;
+      }
+      .shop-flavor {
+        margin-top: 3px;
+        font: 600 8.5px var(--hud-font);
+        letter-spacing: 0.26em;
+        text-transform: uppercase;
+        color: var(--tx2);
+        opacity: 0.72;
       }
       .shop-kind {
         margin-top: 2px;
@@ -2246,6 +2337,39 @@
         transition: filter 0.12s, transform 0.12s, background 0.12s;
       }
       .shop-btn:hover { transform: translateY(-1px); background: var(--ui-hi); filter: drop-shadow(0 5px 16px rgba(247, 148, 34, 0.55)); }
+      .shop-btn:active { transform: translateY(1px) scale(0.99); }
+      .shop-btn.buy {
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 12px 0;
+      }
+      .shop-btn.buy img { height: 15px; width: auto; }
+      .shop-btn.buy .btn-px { font-variant-numeric: tabular-nums; letter-spacing: 0.08em; }
+      .shop-btn.buy::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -60%;
+        width: 42%;
+        height: 100%;
+        background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transform: skewX(-18deg);
+        opacity: 0;
+        pointer-events: none;
+      }
+      .shop-btn.buy:hover::before { animation: btn-sweep 0.5s ease-out; }
+      @keyframes btn-sweep {
+        0% { left: -60%; opacity: 0; }
+        18% { opacity: 1; }
+        100% { left: 120%; opacity: 0; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .shop-btn.buy:hover::before { animation: none; }
+      }
       .shop-btn.own {
         background: rgba(255, 255, 255, 0.05);
         color: var(--tx);

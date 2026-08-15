@@ -133,6 +133,16 @@ const KINDS = [
   ["patch", "PATCHES"],
 ];
 const KIND_LABEL = { tracer: "tracer", ward: "spawn ward", name: "callsign" };
+const FLAVOR = {
+  tracer_goldrush: "LEAVE 'EM GLITTERING",
+  tracer_comet: "BURN BRIGHT",
+  tracer_hellfire: "LIGHT THE LOBBY",
+  tracer_voltage: "HIGH VOLTAGE",
+  tracer_abyss: "OUT OF THE DARK",
+  tracer_glacier: "COLD SHOT",
+  tracer_toxin: "LETHAL GLOW",
+  tracer_default: "STANDARD ISSUE",
+};
 const SHOP_PITCH = {
   tracer: "every shot you fire is signed — the whole lobby watches YOUR colour cut the air",
   ward: "spawn like you mean it — your shield, your colour, their warning",
@@ -654,6 +664,7 @@ function preview(kind, hex, id) {
     img.className = "tracer-img";
     img.src = `/images/${id}.png`;
     img.alt = "";
+    prev.className = "shop-prev tracer";
     prev.append(img);
     return prev;
   }
@@ -705,24 +716,21 @@ function card(item, inStash) {
     tag.textContent = item.tier.toUpperCase();
     c.append(tag);
   }
+  if (item.hex && item.kind !== "patch") c.style.setProperty("--c", item.hex);
   c.append(preview(item.kind, item.hex, item.id));
   const nm = document.createElement("div");
   nm.className = "shop-name";
   nm.textContent = item.name;
   const kd_ = document.createElement("div");
-  kd_.className = "shop-kind";
-  kd_.textContent = KIND_LABEL[item.kind] ?? item.kind;
+  if (item.kind === "tracer" && FLAVOR[item.id]) {
+    kd_.className = "shop-flavor";
+    kd_.textContent = FLAVOR[item.id];
+  } else {
+    kd_.className = "shop-kind";
+    kd_.textContent = KIND_LABEL[item.kind] ?? item.kind;
+  }
   c.append(nm, kd_);
   const has = owned.includes(item.id) || item.id.endsWith("_default");
-  if (!inStash) {
-    const price = document.createElement("div");
-    price.className = "shop-price";
-    const icon = document.createElement("img");
-    icon.src = "/images/stacks-web.webp";
-    icon.alt = "stacks";
-    price.append(icon, String(item.price));
-    c.append(price);
-  }
   const btn = document.createElement("button");
   btn.type = "button";
   btn.className = "shop-btn";
@@ -737,7 +745,15 @@ function card(item, inStash) {
       renderShop();
     });
   } else {
-    btn.textContent = "BUY";
+    btn.classList.add("buy");
+    btn.append(document.createTextNode("UNLOCK"));
+    const icon = document.createElement("img");
+    icon.src = "/images/stacks-web.webp";
+    icon.alt = "stacks";
+    const px = document.createElement("span");
+    px.className = "btn-px";
+    px.textContent = String(item.price);
+    btn.append(icon, px);
     on(btn, "click", () => purchase(item, btn));
   }
   c.append(btn);
