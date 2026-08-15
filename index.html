@@ -2217,19 +2217,31 @@
         filter: brightness(1.12);
       }
       .shop-card:hover .shop-prev.tracer .tracer-img {
-        animation: tracer-fire 0.55s cubic-bezier(0.2, 0.72, 0.2, 1);
+        animation: tracer-fire 1.8s cubic-bezier(0.2, 0.72, 0.2, 1);
       }
       .shop-card:hover .shop-prev.tracer::after {
         animation: tracer-flash 0.6s ease-out;
       }
       @keyframes tracer-fire {
         0% {
-          transform: translateX(-24%) scale(1.0);
-          opacity: 0.32;
+          transform: translateX(-110%) scale(1.0);
+          opacity: 0.15;
         }
-        55% {
-          transform: translateX(2%) scale(1.06);
+        20% {
+          transform: translateX(110%) scale(1.04);
           opacity: 1;
+        }
+        40% {
+          transform: translateX(-110%) scale(1.0);
+          opacity: 0.82;
+        }
+        60% {
+          transform: translateX(110%) scale(1.04);
+          opacity: 1;
+        }
+        78% {
+          transform: translateX(-34%) scale(1.02);
+          opacity: 0.9;
         }
         100% {
           transform: translateX(0) scale(1.04);
