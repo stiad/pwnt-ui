@@ -2388,13 +2388,12 @@
         .lo-slot { flex: 1 1 calc(50% - 4px); padding: 11px 12px; gap: 9px; }
         .lo-grid { grid-template-columns: 1fr; gap: 0; }
         .lo-drop { padding: 12px 12px 6px; }
-        .opt-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .opt { gap: 10px; padding: 10px 4px; }
+        .opt-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .opt-btn, .opt-badge { flex: none; margin-left: auto; }
       }
       @media (max-width: 480px) {
         .lo-slot { flex: 1 1 100%; }
-        .opt { flex-wrap: wrap; gap: 8px 10px; }
-        .opt-txt { flex: 1 1 100%; }
-        .opt-btn, .opt-badge { margin-left: 43px; }
       }
       /* Social: global chat + friends, same forged-card language. */
       .soc-wrap {
@@ -5377,14 +5376,21 @@
            just amplifies every fixed width, so drop back to true pixels */
         #mainmenu { zoom: 1; }
         .mm-body { padding: 16px 14px 30px; }
-        .mm-head { padding: 12px 14px 10px; gap: 10px 12px; }
-        .mm-logo { height: 34px; }
 
-        /* header wallet + level badge shrink so the top row stays tidy */
-        .mm-wallet { gap: 7px; }
-        .mm-wallet .cur { --chip: 0.92; }
-        .lvl-badge { width: 36px; height: 40px; }
+        /* one tidy header row: logo left, wallet + logout + menu grouped right */
+        .mm-head { padding: 10px 14px; gap: 10px; flex-wrap: nowrap; align-items: center; }
+        .mm-logo { height: 32px; flex: none; }
+        .mm-wallet { margin-left: auto; gap: 8px; }
+        .mm-wallet .cur { --chip: 1.1; }
+        .lvl-badge { width: 36px; height: 40px; flex: none; }
         .lvl-badge b { font-size: 15px; }
+        .mm-acct { gap: 8px; flex: none; }
+        .mm-user { font-size: 13px; }
+        /* logout collapses to just its icon on phones */
+        #mm-logout { padding: 8px; }
+        #mm-logout .lo-label { display: none; }
+        #mm-logout svg { width: 15px; height: 15px; }
+        .mm-burger { flex: none; }
 
         /* pane titles: ease off the very wide letter tracking */
         .mm-pane-head { font-size: 19px; letter-spacing: 0.18em; text-indent: 0.18em; }
@@ -5427,7 +5433,7 @@
       }
 
       @media (max-width: 420px) {
-        .mm-wallet .cur { --chip: 0.82; }
+        .mm-user { display: none; }
         .mm-pane-head { font-size: 17px; letter-spacing: 0.12em; text-indent: 0.12em; }
         .mm-tabs button { font-size: 14px; }
         .shop-card { width: 100%; max-width: 300px; }
@@ -5618,7 +5624,7 @@
             <span class="mm-user" id="mm-user"></span>
             <button id="mm-logout" type="button" title="Switch operator">
               <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
-              LOG OUT
+              <span class="lo-label">LOG OUT</span>
             </button>
           </div>
           <button id="mm-burger" class="mm-burger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
