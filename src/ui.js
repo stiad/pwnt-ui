@@ -1003,10 +1003,46 @@ function renderShop() {
     stash.append(stashLoadout());
     const counts = new Map(KINDS.map(([k]) => [k, stashItems(k).length]));
     stash.append(chipRow(stashCat, counts, (k) => { stashCat = k; renderShop(); }));
-    const grid = document.createElement("div");
-    grid.className = "shop-grid";
-    for (const item of stashItems(stashCat).sort(byRarity)) grid.append(card(item, true));
-    stash.append(grid);
+
+    const label = (KINDS.find(([k]) => k === stashCat) || ["", stashCat])[1];
+    const items = stashItems(stashCat).sort(byRarity);
+    const equippedItem = items.find(
+      (i) => equip[i.kind] === i.id || (i.id.endsWith("_default") && !equip[i.kind]),
+    );
+
+    const head = mk("div", "stash-sec-title");
+    head.append(mk("span", "sst-label", label));
+    head.append(mk("i", "sst-count", `${items.length} owned`));
+    stash.append(head);
+
+    if (equippedItem) {
+      const eq = mk("div", "stash-equipped");
+      eq.append(mk("span", "seq-dot"));
+      eq.append(mk("span", "seq-kicker", "EQUIPPED"));
+      eq.append(mk("span", "seq-name", equippedItem.name));
+      stash.append(eq);
+    }
+
+    if (!items.length) {
+      const empty = mk("div", "stash-empty");
+      empty.append(mk("div", "se-title", "NOTHING IN THIS LOCKER YET"));
+      empty.append(mk("div", "se-sub", `You don't own any ${label.toLowerCase()} — pick some up in the Armory.`));
+      const cta = mk("button", "se-cta", "OPEN THE ARMORY");
+      cta.type = "button";
+      on(cta, "click", () => {
+        shopCat = stashCat;
+        const tab = document.querySelector('.mm-tabs [data-tab="shop"]');
+        if (tab) tab.click();
+        renderShop();
+      });
+      empty.append(cta);
+      stash.append(empty);
+    } else {
+      const grid = document.createElement("div");
+      grid.className = "shop-grid";
+      for (const item of items) grid.append(card(item, true));
+      stash.append(grid);
+    }
   }
 }
 
