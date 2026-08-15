@@ -2206,14 +2206,14 @@
       .shop-card .shop-prev.tracer .tracer-img[src*="tracer_goldrush"] {
         --tracer-y: 1.45;
       }
-      /* Secondary bloom that flashes as the projectile passes */
+      /* Inset vignette so the tracer's glow blends into the frame edges */
       .shop-card .shop-prev.tracer::after {
         content: "";
         position: absolute;
-        inset: -20% -10%;
+        inset: 0;
         pointer-events: none;
-        background: radial-gradient(52% 60% at 62% 50%, color-mix(in srgb, var(--c) 48%, transparent), transparent 70%);
-        opacity: 0;
+        background: radial-gradient(120% 100% at 50% 50%, transparent 52%, rgba(0, 0, 0, 0.55) 82%, rgba(0, 0, 0, 0.9) 100%);
+        z-index: 2;
       }
       .shop-card:hover .shop-prev.tracer {
         box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 26%, rgba(255, 255, 255, 0.06)),
@@ -2224,7 +2224,7 @@
         animation: tracer-fire 1.15s cubic-bezier(0.2, 0.72, 0.2, 1);
       }
       .shop-card:hover .shop-prev.tracer::after {
-        animation: none;
+        background: radial-gradient(120% 100% at 50% 50%, transparent 48%, rgba(0, 0, 0, 0.5) 80%, rgba(0, 0, 0, 0.88) 100%);
       }
       @keyframes tracer-fire {
         0% {
