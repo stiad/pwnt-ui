@@ -1285,7 +1285,8 @@ function setupAmbient() {
   const style = document.createElement("style");
   style.textContent = `
     #mm-fx { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-    #mainmenu > .mm-head, #mainmenu > .mm-body { position: relative; z-index: 1; }
+    #mainmenu > .mm-body { position: relative; z-index: 1; }
+    #mainmenu > .mm-head { position: relative; z-index: 3; }
     /* Cinematic vignette: darkens the far edges so the lit centre reads with
        depth, the way a AAA menu frames its focal point. */
     #mainmenu::after {
