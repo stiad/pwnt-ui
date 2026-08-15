@@ -93,7 +93,7 @@ const SHOP_CATALOG = [
   { id: "tracer_voltage", kind: "tracer", name: "Voltage", hex: "#c77dff", price: 200, tier: "rare" },
   { id: "tracer_abyss", kind: "tracer", name: "Abyss", hex: "#3d5aff", price: 200, tier: "rare" },
   { id: "tracer_goldrush", kind: "tracer", name: "Goldrush", hex: "#ffd36b", price: 250, tier: "epic" },
-  { id: "tracer_whiteout", kind: "tracer", name: "Whiteout", hex: "#f2f6ff", price: 250, tier: "epic" },
+  { id: "tracer_comet", kind: "tracer", name: "Comet", hex: "#f2f6ff", price: 250, tier: "epic" },
   { id: "ward_ember", kind: "ward", name: "Ember", hex: "#ffb457", price: 175, tier: "common" },
   { id: "ward_emerald", kind: "ward", name: "Emerald", hex: "#52ffa8", price: 175, tier: "common" },
   { id: "ward_void", kind: "ward", name: "Void", hex: "#8a2be2", price: 175, tier: "common" },
@@ -646,9 +646,17 @@ function setupBoardControls() {
 // preview(): each kind renders a different swatch element, and the stylesheet
 // draws them — a tracer is a .streak, a ward an .orb, a callsign coloured
 // text, gear a tinted portrait, a patch a decal image.
-function preview(kind, hex) {
+function preview(kind, hex, id) {
   const prev = document.createElement("div");
   prev.className = "shop-prev";
+  if (kind === "tracer" && id && id !== "tracer_default") {
+    const img = document.createElement("img");
+    img.className = "tracer-img";
+    img.src = `/images/${id}.png`;
+    img.alt = "";
+    prev.append(img);
+    return prev;
+  }
   if (kind === "patch") {
     const el = document.createElement("div");
     el.className = "patch-prev";
@@ -697,7 +705,7 @@ function card(item, inStash) {
     tag.textContent = item.tier.toUpperCase();
     c.append(tag);
   }
-  c.append(preview(item.kind, item.hex));
+  c.append(preview(item.kind, item.hex, item.id));
   const nm = document.createElement("div");
   nm.className = "shop-name";
   nm.textContent = item.name;
