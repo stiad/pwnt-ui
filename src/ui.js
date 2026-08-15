@@ -1066,7 +1066,9 @@ function renderShop() {
     const counts = new Map(
       KINDS.map(([k]) => [k, SHOP_CATALOG.filter((i) => i.kind === k).length]),
     );
-    shop.append(chipRow(shopCat, counts, (k) => { shopCat = k; renderShop(); }));
+    const panel = document.createElement("div");
+    panel.className = "shop-panel";
+    panel.append(chipRow(shopCat, counts, (k) => { shopCat = k; renderShop(); }));
     const grid = document.createElement("div");
     grid.className = "shop-grid";
     if (shopCat === "stacks") {
@@ -1076,7 +1078,8 @@ function renderShop() {
         grid.append(card(item, false));
       }
     }
-    shop.append(grid);
+    panel.append(grid);
+    shop.append(panel);
 
     if (shopCat !== "stacks") {
       shop.append(setStrip(), shipBar());
