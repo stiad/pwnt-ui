@@ -943,24 +943,90 @@ function shipBar() {
 }
 
 // Equipped-gear summary shown at the top of the stash.
+const isOwned = (id) => owned.includes(id) || id.endsWith("_default");
+
+function optionsFor(kind) {
+  return [
+    ...SHOP_DEFAULTS.filter((i) => i.kind === kind),
+    ...SHOP_CATALOG.filter((i) => i.kind === kind).sort(byRarity),
+  ];
+}
+
+function loSwatch(item) {
+  if (!item) return mk("span", "lo-sw empty");
+  if (item.kind === "patch") {
+    const s = mk("span", "lo-sw patch");
+    const img = document.createElement("img");
+    img.src = `/images/patch_${item.hex}.webp`;
+    img.alt = "";
+    s.append(img);
+    return s;
+  }
+  const s = mk("span", "lo-sw");
+  s.style.setProperty("--c", item.hex.startsWith("#") ? item.hex : "#5a6572");
+  return s;
+}
+
+function optionRow(item, kind) {
+  const own = isOwned(item.id);
+  const equipped = equip[kind] === item.id || (item.id.endsWith("_default") && !equip[kind]);
+  const r = mk("div", "opt" + (own ? "" : " locked") + (equipped ? " eq" : ""));
+  r.append(loSwatch(item));
+  const t = mk("div", "opt-txt");
+  t.append(mk("span", "opt-name", item.name));
+  if (item.tier) t.append(mk("span", "opt-tier tier-" + item.tier, item.tier));
+  r.append(t);
+  if (equipped) {
+    r.append(mk("span", "opt-badge", "EQUIPPED"));
+  } else if (own) {
+    const b = mk("button", "opt-btn own", "EQUIP");
+    b.type = "button";
+    on(b, "click", () => { equip[kind] = item.id; paintHeader(); renderShop(); });
+    r.append(b);
+  } else {
+    const b = mk("button", "opt-btn buy");
+    b.type = "button";
+    b.append(stacksPrice(item.price));
+    on(b, "click", () => purchase(item, b));
+    r.append(b);
+  }
+  return r;
+}
+
 function stashLoadout() {
-  const bar = mk("div", "stash-loadout");
-  bar.append(mk("span", "sl-title", "ACTIVE LOADOUT"));
-  const slots = mk("div", "sl-slots");
+  const wrap = mk("div", "stash-lo");
   const all = [...SHOP_DEFAULTS, ...SHOP_CATALOG];
   for (const [kind, label] of KINDS) {
-    const item = all.find((i) => i.id === equip[kind]);
-    const slot = mk("div", "sl-slot" + (item ? " on" : ""));
-    const sw = mk("span", "sl-swatch");
-    sw.style.setProperty("--c", item && item.hex.startsWith("#") ? item.hex : "#5a6572");
-    slot.append(sw);
+    const equipped =
+      all.find((i) => i.id === equip[kind]) || SHOP_DEFAULTS.find((i) => i.kind === kind) || null;
+    const open = stashCat === kind;
+    const opts = optionsFor(kind);
+    const ownedN = opts.filter((o) => isOwned(o.id)).length;
+
+    const row = mk("div", "lo-row" + (open ? " open" : ""));
+    const head = mk("button", "lo-slot");
+    head.type = "button";
+    head.setAttribute("aria-expanded", open ? "true" : "false");
+    head.append(loSwatch(equipped));
     const txt = mk("div", "sl-txt");
-    txt.append(mk("span", "sl-kind", label), mk("span", "sl-name", item ? item.name : "\u2014"));
-    slot.append(txt);
-    slots.append(slot);
+    txt.append(
+      mk("span", "sl-kind", label),
+      mk("span", "sl-name", equipped ? equipped.name : "None equipped"),
+    );
+    head.append(txt);
+    head.append(mk("span", "lo-meta", `${ownedN} / ${opts.length}`));
+    head.append(mk("span", "lo-chev"));
+    on(head, "click", () => { stashCat = open ? null : kind; renderShop(); });
+    row.append(head);
+
+    if (open) {
+      const list = mk("div", "lo-list");
+      for (const item of opts) list.append(optionRow(item, kind));
+      row.append(list);
+    }
+    wrap.append(row);
   }
-  bar.append(slots);
-  return bar;
+  return wrap;
 }
 
 // One render for both panes, same as the real client's render().
@@ -996,42 +1062,16 @@ function renderShop() {
   const stash = $("stash-grid");
   if (stash) {
     stash.textContent = "";
-    const stashItems = (kind) => [
-      ...SHOP_DEFAULTS.filter((i) => i.kind === kind),
-      ...owned.map((id) => SHOP_CATALOG.find((i) => i.id === id)).filter((i) => i && i.kind === kind),
-    ];
     stash.append(stashLoadout());
-    const counts = new Map(KINDS.map(([k]) => [k, stashItems(k).length]));
-    stash.append(chipRow(stashCat, counts, (k) => { stashCat = k; renderShop(); }));
-
-    const label = (KINDS.find(([k]) => k === stashCat) || ["", stashCat])[1];
-    const items = stashItems(stashCat).sort(byRarity);
-
-    const gotoShop = () => {
-      shopCat = stashCat;
+    const foot = mk("div", "stash-foot");
+    const more = mk("button", "stb-more", "Browse the full Armory \u2192");
+    more.type = "button";
+    on(more, "click", () => {
       const tab = document.querySelector('.mm-tabs [data-tab="shop"]');
       if (tab) tab.click();
-      renderShop();
-    };
-
-    const bar = mk("div", "stash-bar");
-    bar.append(mk("span", "stb-count", `${items.length} ${items.length === 1 ? "item" : "items"}`));
-    const more = mk("button", "stb-more", "Get more in the Armory \u2192");
-    more.type = "button";
-    on(more, "click", gotoShop);
-    bar.append(more);
-    stash.append(bar);
-
-    if (!items.length) {
-      const empty = mk("div", "stash-empty");
-      empty.append(mk("div", "se-sub", `No ${label.toLowerCase()} yet — grab some in the Armory to fill this slot.`));
-      stash.append(empty);
-    } else {
-      const grid = document.createElement("div");
-      grid.className = "shop-grid";
-      for (const item of items) grid.append(card(item, true));
-      stash.append(grid);
-    }
+    });
+    foot.append(more);
+    stash.append(foot);
   }
 }
 

@@ -2233,83 +2233,97 @@
         background: rgba(247, 148, 34, 0.22);
         box-shadow: inset 0 0 0 1px rgba(247, 148, 34, 0.5);
       }
-      .stash-sec { margin-bottom: 30px; }
-      .stash-sec-title {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        margin-bottom: 14px;
-        font: 700 12px var(--hud-font);
-        letter-spacing: 0.3em;
-        text-indent: 0.3em;
-        color: var(--ui-hi);
-        text-shadow: 0 0 12px var(--ui-glow);
+      /* Stash: expandable loadout categories (accordion) */
+      .stash-lo { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+      .lo-row {
+        border: none; border-radius: 0; clip-path: var(--chamfer);
+        box-shadow: inset 0 0 0 1px rgba(255, 178, 92, 0.18);
+        background:
+          linear-gradient(160deg, rgba(18, 26, 32, 0.85), rgba(11, 15, 19, 0.92)),
+          radial-gradient(90% 120% at 0% 0%, rgba(247, 148, 34, 0.08), transparent 55%);
+        transition: box-shadow 0.18s ease;
       }
-      .stash-sec-title::before,
-      .stash-sec-title::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(247, 148, 34, 0.3), transparent);
+      .lo-row.open { box-shadow: inset 0 0 0 1px rgba(247, 148, 34, 0.5); }
+      .lo-slot {
+        display: flex; align-items: center; gap: 14px; width: 100%;
+        padding: 15px 18px; border: none; background: none; cursor: pointer; text-align: left;
+        color: inherit;
       }
-      /* slim toolbar under the stash tabs: count on the left, a standing
-         pointer back to the shop on the right */
-      .stash-bar {
-        display: flex; align-items: center; justify-content: space-between; gap: 14px;
-        max-width: 1100px; margin: 0 auto 18px; padding: 0 2px;
+      .lo-sw {
+        flex: none; width: 38px; height: 38px; border-radius: 9px; overflow: hidden;
+        background: radial-gradient(circle at 50% 40%, var(--c, #5a6572), color-mix(in srgb, var(--c, #5a6572) 40%, #060a0d));
+        box-shadow: 0 0 12px -2px var(--c, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.2);
       }
-      .stb-count { font: 700 11px var(--hud-font); letter-spacing: 0.16em; color: var(--tx2); }
+      .lo-sw.patch { background: rgba(0, 0, 0, 0.35); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); }
+      .lo-sw.patch img { width: 100%; height: 100%; object-fit: cover; }
+      .lo-sw.empty { background: rgba(255, 255, 255, 0.05); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1); }
+      .sl-txt { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
+      .sl-kind { font: 700 8.5px var(--hud-font); letter-spacing: 0.16em; color: var(--tx2); text-transform: uppercase; }
+      .sl-name { font: 700 14px var(--hud-font); letter-spacing: 0.04em; color: var(--tx); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .lo-meta { flex: none; font: 700 10px var(--hud-font); letter-spacing: 0.1em; color: var(--tx2); }
+      .lo-chev {
+        flex: none; width: 9px; height: 9px; margin-left: 4px;
+        border-right: 2px solid var(--ui-hi); border-bottom: 2px solid var(--ui-hi);
+        transform: rotate(45deg); transition: transform 0.2s ease; opacity: 0.85;
+      }
+      .lo-row.open .lo-chev { transform: rotate(-135deg); }
+      .lo-list {
+        display: flex; flex-direction: column;
+        padding: 4px 10px 12px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      /* one option per row; un-owned rows read diffused — a standing sales pitch */
+      .opt {
+        display: flex; align-items: center; gap: 13px;
+        padding: 9px 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .opt:last-child { border-bottom: none; }
+      .opt .lo-sw { width: 30px; height: 30px; border-radius: 7px; }
+      .opt.locked { opacity: 0.42; }
+      .opt.locked:hover { opacity: 0.85; transition: opacity 0.15s ease; }
+      .opt.eq { opacity: 1; }
+      .opt-txt { display: flex; align-items: center; gap: 9px; flex: 1; min-width: 0; }
+      .opt-name { font: 700 13px var(--hud-font); letter-spacing: 0.03em; color: var(--tx); }
+      .opt-tier {
+        font: 800 8px var(--hud-font); letter-spacing: 0.12em; text-transform: uppercase;
+        padding: 2px 6px; border-radius: 999px; color: var(--tx);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+      }
+      .opt-tier.tier-legendary { color: #ffd36b; box-shadow: inset 0 0 0 1px rgba(255, 211, 107, 0.5); }
+      .opt-tier.tier-epic { color: #d99bff; box-shadow: inset 0 0 0 1px rgba(217, 155, 255, 0.5); }
+      .opt-tier.tier-rare { color: #6fd9ff; box-shadow: inset 0 0 0 1px rgba(111, 217, 255, 0.5); }
+      .opt-badge {
+        flex: none; font: 800 9px var(--hud-font); letter-spacing: 0.14em;
+        color: #33e08a; padding: 4px 10px; border-radius: 999px;
+        box-shadow: inset 0 0 0 1px rgba(51, 224, 138, 0.4);
+      }
+      .opt-btn {
+        flex: none; cursor: pointer; border: none; border-radius: 0; clip-path: var(--chamfer);
+        padding: 7px 14px; font: 800 10px var(--hud-font); letter-spacing: 0.12em;
+        transition: transform 0.12s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      }
+      .opt-btn.own {
+        color: var(--ui-hi); background: linear-gradient(180deg, rgba(247, 148, 34, 0.16), rgba(247, 148, 34, 0.05));
+        box-shadow: inset 0 0 0 1px rgba(247, 148, 34, 0.55);
+      }
+      .opt-btn.own:hover { filter: drop-shadow(0 0 8px rgba(247, 148, 34, 0.4)); }
+      .opt-btn.buy {
+        display: inline-flex; align-items: center; gap: 5px;
+        color: #1a1206; background: linear-gradient(180deg, #ffbf68, #f79422);
+        box-shadow: 0 2px 12px rgba(247, 148, 34, 0.35);
+      }
+      .opt.locked .opt-btn.buy { opacity: 1; }
+      .opt-btn.buy:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(247, 148, 34, 0.55); }
+      .opt-btn.buy .px-inline img { width: 12px; height: 12px; }
+      .opt-btn.err { color: #ff6b5a; box-shadow: inset 0 0 0 1px rgba(255, 107, 90, 0.6); background: rgba(255, 107, 90, 0.1); }
+      .stash-foot { max-width: 760px; margin: 20px auto 0; text-align: center; }
       .stb-more {
-        border: none; background: none; cursor: pointer; padding: 4px 2px;
+        border: none; background: none; cursor: pointer; padding: 6px 4px;
         font: 800 11px var(--hud-font); letter-spacing: 0.12em; color: var(--ui-hi);
-        transition: color 0.15s ease, text-shadow 0.15s ease;
+        transition: text-shadow 0.15s ease;
       }
       .stb-more:hover { text-shadow: 0 0 12px var(--ui-glow); }
       .stb-more:focus-visible { outline: none; box-shadow: 0 0 0 2px #0b0b0d, 0 0 0 4px #f79422; border-radius: 4px; }
-      /* empty locker: a quiet single line — the toolbar already points to the shop */
-      .stash-empty { max-width: 1100px; margin: 0 auto; padding: 40px 24px; text-align: center; }
-      .se-sub { font: 600 13px var(--hud-font); line-height: 1.5; color: var(--tx2); }
-      /* Stash active-loadout summary bar */
-      .stash-loadout {
-        max-width: 1100px;
-        margin: 0 auto 20px;
-        padding: 16px 20px;
-        border: none;
-        border-radius: 0;
-        clip-path: var(--chamfer);
-        box-shadow: inset 0 0 0 1px rgba(255, 178, 92, 0.2);
-        background:
-          linear-gradient(160deg, rgba(18, 26, 32, 0.85), rgba(11, 15, 19, 0.92)),
-          radial-gradient(90% 120% at 0% 0%, rgba(247, 148, 34, 0.1), transparent 55%);
-      }
-      .sl-title { font: 800 10px var(--hud-font); letter-spacing: 0.24em; color: var(--ui-hi); }
-      .sl-slots {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-        gap: 10px;
-        margin-top: 12px;
-      }
-      .sl-slot {
-        display: flex;
-        align-items: center;
-        gap: 11px;
-        padding: 10px 12px;
-        border: 1px solid rgba(255, 255, 255, 0.07);
-        border-radius: 10px;
-        background: rgba(0, 0, 0, 0.25);
-      }
-      .sl-slot.on { border-color: rgba(247, 148, 34, 0.32); }
-      .sl-swatch {
-        flex: none;
-        width: 34px;
-        height: 34px;
-        border-radius: 8px;
-        background: radial-gradient(circle at 50% 40%, var(--c), color-mix(in srgb, var(--c) 40%, #060a0d));
-        box-shadow: 0 0 12px -2px var(--c), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      }
-      .sl-txt { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-      .sl-kind { font: 700 8.5px var(--hud-font); letter-spacing: 0.16em; color: var(--tx2); text-transform: uppercase; }
-      .sl-name { font: 700 13px var(--hud-font); letter-spacing: 0.04em; color: var(--tx); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       /* Social: global chat + friends, same forged-card language. */
       .soc-wrap {
         display: flex;
