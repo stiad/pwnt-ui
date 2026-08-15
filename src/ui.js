@@ -996,35 +996,41 @@ function optionRow(item, kind) {
 function stashLoadout() {
   const wrap = mk("div", "stash-lo");
   const all = [...SHOP_DEFAULTS, ...SHOP_CATALOG];
+  const bar = mk("div", "lo-bar");
   for (const [kind, label] of KINDS) {
     const equipped =
       all.find((i) => i.id === equip[kind]) || SHOP_DEFAULTS.find((i) => i.kind === kind) || null;
     const open = stashCat === kind;
-    const opts = optionsFor(kind);
-    const ownedN = opts.filter((o) => isOwned(o.id)).length;
-
-    const row = mk("div", "lo-row" + (open ? " open" : ""));
-    const head = mk("button", "lo-slot");
-    head.type = "button";
-    head.setAttribute("aria-expanded", open ? "true" : "false");
-    head.append(loSwatch(equipped));
+    const slot = mk("button", "lo-slot" + (open ? " open" : ""));
+    slot.type = "button";
+    slot.setAttribute("aria-expanded", open ? "true" : "false");
+    slot.append(loSwatch(equipped));
     const txt = mk("div", "sl-txt");
     txt.append(
       mk("span", "sl-kind", label),
-      mk("span", "sl-name", equipped ? equipped.name : "None equipped"),
+      mk("span", "sl-name", equipped ? equipped.name : "None"),
     );
-    head.append(txt);
-    head.append(mk("span", "lo-meta", `${ownedN} / ${opts.length}`));
-    head.append(mk("span", "lo-chev"));
-    on(head, "click", () => { stashCat = open ? null : kind; renderShop(); });
-    row.append(head);
+    slot.append(txt);
+    slot.append(mk("span", "lo-chev"));
+    on(slot, "click", () => { stashCat = open ? null : kind; renderShop(); });
+    bar.append(slot);
+  }
+  wrap.append(bar);
 
-    if (open) {
-      const list = mk("div", "lo-list");
-      for (const item of opts) list.append(optionRow(item, kind));
-      row.append(list);
-    }
-    wrap.append(row);
+  if (stashCat) {
+    const kind = stashCat;
+    const label = (KINDS.find(([k]) => k === kind) || ["", ""])[1];
+    const opts = optionsFor(kind);
+    const ownedN = opts.filter((o) => isOwned(o.id)).length;
+    const drop = mk("div", "lo-drop");
+    const dh = mk("div", "lo-drop-head");
+    dh.append(mk("span", "ldh-label", label));
+    dh.append(mk("span", "ldh-meta", `${ownedN} / ${opts.length} owned`));
+    drop.append(dh);
+    const grid = mk("div", "lo-grid");
+    for (const item of opts) grid.append(optionRow(item, kind));
+    drop.append(grid);
+    wrap.append(drop);
   }
   return wrap;
 }
