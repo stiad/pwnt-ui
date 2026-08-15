@@ -2194,6 +2194,7 @@
         transition: box-shadow 0.18s, filter 0.18s;
       }
       .shop-card .shop-prev.tracer .tracer-img {
+        --tracer-y: 1;
         width: 116%;
         max-width: none;
         max-height: 132%;
@@ -2201,6 +2202,9 @@
         object-fit: contain;
         mix-blend-mode: screen;
         will-change: transform, opacity;
+      }
+      .shop-card .shop-prev.tracer .tracer-img[src*="tracer_goldrush"] {
+        --tracer-y: 1.45;
       }
       /* Secondary bloom that flashes as the projectile passes */
       .shop-card .shop-prev.tracer::after {
@@ -2224,19 +2228,27 @@
       }
       @keyframes tracer-fire {
         0% {
-          transform: translateX(-110%) scale(1.0);
+          transform: translateX(-110%) scale(1.0) scaleY(var(--tracer-y));
           opacity: 0.15;
         }
-        60% {
-          transform: translateX(110%) scale(1.04);
+        27% {
+          transform: translateX(110%) scale(1.04) scaleY(var(--tracer-y));
           opacity: 1;
         }
-        75% {
-          transform: translateX(110%) scale(1.04);
+        42% {
+          transform: translateX(-110%) scale(1.0) scaleY(var(--tracer-y));
+          opacity: 0.82;
+        }
+        69% {
+          transform: translateX(110%) scale(1.04) scaleY(var(--tracer-y));
           opacity: 1;
+        }
+        78% {
+          transform: translateX(-110%) scale(1.0) scaleY(var(--tracer-y));
+          opacity: 0.9;
         }
         100% {
-          transform: translateX(0) scale(1.04);
+          transform: translateX(0) scale(1.04) scaleY(var(--tracer-y));
           opacity: 1;
         }
       }
