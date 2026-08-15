@@ -2311,6 +2311,14 @@
         animation: loDrop 0.16s ease;
       }
       @keyframes loDrop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+      /* Pointer bridging the gap up to the slot you actually clicked. */
+      .lo-notch {
+        position: absolute; top: -6px; left: var(--notch, 50%);
+        width: 12px; height: 12px; transform: translateX(-50%) rotate(45deg);
+        background: rgba(20, 28, 34, 0.98);
+        border-top: 1px solid rgba(247, 148, 34, 0.4);
+        border-left: 1px solid rgba(247, 148, 34, 0.4);
+      }
       .lo-drop-head {
         display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px;
         padding-bottom: 9px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);

@@ -1010,6 +1010,7 @@ function stashLoadout() {
   const wrap = mk("div", "stash-lo");
   const all = [...SHOP_DEFAULTS, ...SHOP_CATALOG];
   const bar = mk("div", "lo-bar");
+  let openSlot = null;
   for (const [kind, label] of KINDS) {
     const equipped =
       all.find((i) => i.id === equip[kind]) || SHOP_DEFAULTS.find((i) => i.kind === kind) || null;
@@ -1026,6 +1027,7 @@ function stashLoadout() {
     slot.append(txt);
     slot.append(mk("span", "lo-chev"));
     on(slot, "click", () => { stashCat = open ? null : kind; renderShop(); });
+    if (open) openSlot = slot;
     bar.append(slot);
   }
   wrap.append(bar);
@@ -1036,6 +1038,7 @@ function stashLoadout() {
     const opts = optionsFor(kind);
     const ownedN = opts.filter((o) => isOwned(o.id)).length;
     const drop = mk("div", "lo-drop");
+    drop.append(mk("span", "lo-notch"));
     const dh = mk("div", "lo-drop-head");
     dh.append(mk("span", "ldh-label", label));
     dh.append(mk("span", "ldh-meta", `${ownedN} / ${opts.length} owned`));
@@ -1044,6 +1047,8 @@ function stashLoadout() {
     for (const item of opts) grid.append(optionRow(item, kind));
     drop.append(grid);
     wrap.append(drop);
+    wrap._openSlot = openSlot;
+    wrap._drop = drop;
   }
   return wrap;
 }
@@ -1081,7 +1086,12 @@ function renderShop() {
   const stash = $("stash-grid");
   if (stash) {
     stash.textContent = "";
-    stash.append(stashLoadout());
+    const lo = stashLoadout();
+    stash.append(lo);
+    if (lo._openSlot && lo._drop) {
+      const s = lo._openSlot;
+      lo._drop.style.setProperty("--notch", `${s.offsetLeft + s.offsetWidth / 2}px`);
+    }
     const foot = mk("div", "stash-foot");
     const more = mk("button", "stb-more", "Browse the full Armory \u2192");
     more.type = "button";
