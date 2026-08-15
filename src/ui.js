@@ -1012,10 +1012,18 @@ function renderShop() {
 
 // ------------------------------------------------------------------ settings
 
+// Paints the copper-filled portion of a range track up to its current value.
+function setFill(el) {
+  const min = Number(el.min || 0);
+  const max = Number(el.max || 100);
+  const pct = max > min ? ((Number(el.value) - min) / (max - min)) * 100 : 50;
+  el.style.setProperty("--fill", `${pct.toFixed(1)}%`);
+}
+
 function setupSettings() {
   // Crosshair — same localStorage key and CSS vars as the real client, so a
   // look tuned here transfers.
-  const DEF = { len: 9, th: 2, gap: 4, op: 0.92, dot: false };
+  const DEF = { len: 9, th: 2, gap: 4, op: 0.92, dot: false, c: "#e9f1f7" };
   const cfg = { ...DEF, ...JSON.parse(localStorage.getItem("fps.xh") || "{}") };
   const apply = () => {
     for (const el of [$("crosshair"), $("xh-demo")]) {
@@ -1024,6 +1032,8 @@ function setupSettings() {
       el.style.setProperty("--xh-th", `${cfg.th}px`);
       el.style.setProperty("--xh-gap", `${cfg.gap}px`);
       el.style.setProperty("--xh-op", String(cfg.op));
+      el.style.setProperty("--xh-c", cfg.c);
+      el.style.setProperty("--xh-dot", cfg.dot ? "block" : "none");
     }
     localStorage.setItem("fps.xh", JSON.stringify(cfg));
   };
@@ -1037,13 +1047,95 @@ function setupSettings() {
     const out = $(`${id}-v`);
     if (!el) continue;
     el.value = String(cfg[key]);
+    setFill(el);
     if (out) out.textContent = fmt(cfg[key]);
     on(el, "input", () => {
       cfg[key] = Number(el.value);
+      setFill(el);
       if (out) out.textContent = fmt(el.value);
       apply();
     });
   }
+
+  // Crosshair colour — preset swatches plus a free colour picker, kept in sync.
+  const SWATCHES = ["#e9f1f7", "#00e676", "#ff3b3b", "#f79422", "#25c4ff", "#ff4fd8"];
+  const swatchWrap = $("xh-swatches");
+  const colorInput = $("xh-c");
+  const paintSwatches = () => {
+    if (!swatchWrap) return;
+    for (const i of swatchWrap.children) {
+      i.classList.toggle("on", i.dataset.c.toLowerCase() === cfg.c.toLowerCase());
+    }
+  };
+  if (swatchWrap) {
+    swatchWrap.textContent = "";
+    for (const hex of SWATCHES) {
+      const i = document.createElement("i");
+      i.dataset.c = hex;
+      i.style.background = hex;
+      i.setAttribute("role", "button");
+      i.setAttribute("aria-label", `crosshair colour ${hex}`);
+      i.tabIndex = 0;
+      const pick = () => {
+        cfg.c = hex;
+        if (colorInput) colorInput.value = hex;
+        paintSwatches();
+        apply();
+      };
+      on(i, "click", pick);
+      on(i, "keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          pick();
+        }
+      });
+      swatchWrap.append(i);
+    }
+  }
+  if (colorInput) {
+    colorInput.value = cfg.c;
+    on(colorInput, "input", () => {
+      cfg.c = colorInput.value;
+      paintSwatches();
+      apply();
+    });
+  }
+  paintSwatches();
+
+  // Centre dot toggle.
+  const dotEl = $("xh-dot");
+  if (dotEl) {
+    dotEl.checked = !!cfg.dot;
+    on(dotEl, "change", () => {
+      cfg.dot = dotEl.checked;
+      apply();
+    });
+  }
+
+  const reset = $("xh-reset");
+  if (reset) {
+    on(reset, "click", () => {
+      Object.assign(cfg, DEF);
+      for (const [id, key, fmt] of [
+        ["xh-len", "len", (v) => `${v}px`],
+        ["xh-th", "th", (v) => `${v}px`],
+        ["xh-gap", "gap", (v) => `${v}px`],
+        ["xh-op", "op", (v) => Number(v).toFixed(2)],
+      ]) {
+        const el = $(id);
+        const out = $(`${id}-v`);
+        if (!el) continue;
+        el.value = String(cfg[key]);
+        setFill(el);
+        if (out) out.textContent = fmt(cfg[key]);
+      }
+      if (colorInput) colorInput.value = cfg.c;
+      if (dotEl) dotEl.checked = cfg.dot;
+      paintSwatches();
+      apply();
+    });
+  }
+
   apply();
 
   // Sliders that only need to move and persist in this build.
@@ -1058,11 +1150,41 @@ function setupSettings() {
     const saved = Number(localStorage.getItem(key));
     const val = Number.isFinite(saved) && localStorage.getItem(key) !== null ? saved : def;
     el.value = String(val);
+    setFill(el);
     if (out) out.textContent = fmt(val);
     on(el, "input", () => {
       localStorage.setItem(key, el.value);
+      setFill(el);
       if (out) out.textContent = fmt(el.value);
     });
+  }
+
+  // Resolution — segmented picker (visual persistence only in this shell).
+  const seg = $("gx-res");
+  if (seg) {
+    const savedRes = localStorage.getItem("fps.res");
+    const buttons = [...seg.querySelectorAll("button")];
+    const select = (btn) => {
+      for (const b of buttons) {
+        const on2 = b === btn;
+        b.classList.toggle("on", on2);
+        b.setAttribute("aria-checked", on2 ? "true" : "false");
+      }
+      localStorage.setItem("fps.res", btn.dataset.res);
+    };
+    if (savedRes) {
+      const match = buttons.find((b) => b.dataset.res === savedRes);
+      if (match) select(match);
+    }
+    for (const b of buttons) on(b, "click", () => select(b));
+  }
+
+  // Filmic vignette — visual toggle persisted in this shell.
+  const vig = $("gx-vig");
+  if (vig) {
+    const savedVig = localStorage.getItem("fps.vig");
+    if (savedVig !== null) vig.checked = savedVig === "1";
+    on(vig, "change", () => localStorage.setItem("fps.vig", vig.checked ? "1" : "0"));
   }
 }
 

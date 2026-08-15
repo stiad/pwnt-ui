@@ -1365,27 +1365,125 @@
         color: var(--tx2);
         overflow: hidden;
       }
-      .mm-row input[type="range"] { accent-color: #f79422; width: 100%; min-width: 0; }
-      .mm-row input[type="color"] { width: 44px; height: 24px; border: none; background: none; cursor: pointer; }
+      /* premium machined range slider */
+      .mm-row input[type="range"] {
+        -webkit-appearance: none; appearance: none;
+        width: 100%; min-width: 0; height: 20px; background: transparent; cursor: pointer;
+      }
+      .mm-row input[type="range"]::-webkit-slider-runnable-track {
+        height: 6px; border-radius: 999px;
+        background:
+          linear-gradient(90deg, #ffbf68 0%, #f79422 var(--fill, 50%), rgba(255, 255, 255, 0.09) var(--fill, 50%), rgba(255, 255, 255, 0.09) 100%);
+        box-shadow: inset 0 0 0 1px rgba(255, 178, 92, 0.18), inset 0 1px 2px rgba(0, 0, 0, 0.6);
+      }
+      .mm-row input[type="range"]::-moz-range-track {
+        height: 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.09);
+        box-shadow: inset 0 0 0 1px rgba(255, 178, 92, 0.18), inset 0 1px 2px rgba(0, 0, 0, 0.6);
+      }
+      .mm-row input[type="range"]::-moz-range-progress {
+        height: 6px; border-radius: 999px; background: linear-gradient(90deg, #ffbf68, #f79422);
+      }
+      .mm-row input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none; margin-top: -6px;
+        width: 18px; height: 18px; border-radius: 50%;
+        background: radial-gradient(circle at 35% 30%, #fff2df, #f79422 55%, #b5610f);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.55), 0 0 10px rgba(247, 148, 34, 0.55), 0 2px 4px rgba(0, 0, 0, 0.5);
+        transition: transform 0.1s ease, box-shadow 0.15s ease;
+      }
+      .mm-row input[type="range"]::-moz-range-thumb {
+        width: 18px; height: 18px; border: none; border-radius: 50%;
+        background: radial-gradient(circle at 35% 30%, #fff2df, #f79422 55%, #b5610f);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.55), 0 0 10px rgba(247, 148, 34, 0.55), 0 2px 4px rgba(0, 0, 0, 0.5);
+      }
+      .mm-row input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.14); }
+      .mm-row input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.06); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.55), 0 0 16px rgba(247, 148, 34, 0.9); }
+      .mm-row input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 2px #0b0b0d, 0 0 0 4px #f79422; }
+      .mm-row input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 2px #0b0b0d, 0 0 0 4px #f79422; }
+      .mm-row input[type="range"]:focus { outline: none; }
+      /* premium sliding toggle */
+      .mm-check input[type="checkbox"] {
+        -webkit-appearance: none; appearance: none;
+        justify-self: start; position: relative; width: 42px; height: 23px; margin: 0;
+        border-radius: 999px; cursor: pointer;
+        background: rgba(255, 255, 255, 0.07);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), inset 0 1px 2px rgba(0, 0, 0, 0.5);
+        transition: background 0.2s ease, box-shadow 0.2s ease;
+      }
+      .mm-check input[type="checkbox"]::after {
+        content: ""; position: absolute; top: 2px; left: 2px; width: 19px; height: 19px;
+        border-radius: 50%; background: linear-gradient(180deg, #eef2f5, #a9b3bb);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); transition: transform 0.2s ease, background 0.2s ease;
+      }
+      .mm-check input[type="checkbox"]:checked {
+        background: linear-gradient(90deg, #f79422, #ffbf68);
+        box-shadow: inset 0 0 0 1px rgba(255, 178, 92, 0.4), 0 0 12px rgba(247, 148, 34, 0.4);
+      }
+      .mm-check input[type="checkbox"]:checked::after { transform: translateX(19px); background: radial-gradient(circle at 40% 35%, #fff4e6, #ffd9a6); }
+      .mm-check input[type="checkbox"]:focus-visible { outline: none; box-shadow: 0 0 0 2px #0b0b0d, 0 0 0 4px #f79422; }
+      .mm-check input[type="checkbox"]:disabled { opacity: 0.45; cursor: not-allowed; }
+      .mm-row-off { opacity: 0.6; }
+      /* segmented resolution picker */
+      .seg { display: flex; gap: 4px; min-width: 0; padding: 3px; border-radius: 8px;
+        background: rgba(0, 0, 0, 0.32); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08); }
+      .seg button {
+        flex: 1; min-width: 0; padding: 5px 4px; border: none; border-radius: 6px; cursor: pointer;
+        background: transparent; color: var(--tx2);
+        font: 700 10px var(--hud-font); letter-spacing: 0.08em; text-transform: uppercase;
+        transition: color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+      }
+      .seg button:hover { color: #ffe4c4; }
+      .seg button.on {
+        color: var(--ui-ink, #1a1206);
+        background: linear-gradient(180deg, #ffbf68, #f79422);
+        box-shadow: 0 1px 6px rgba(247, 148, 34, 0.4);
+      }
+      .seg button:focus-visible { outline: none; box-shadow: 0 0 0 2px #0b0b0d, 0 0 0 4px #f79422; }
       .mm-row select {
         padding: 4px 6px; border-radius: 5px; font: 600 11px var(--hud-font);
         background: rgba(255, 255, 255, 0.06); color: var(--tx);
         border: 1px solid rgba(255, 255, 255, 0.15);
       }
-      .mm-row b { font: 700 11px ui-monospace, monospace; color: var(--tx); text-align: right; }
-      .mm-check input { justify-self: start; width: 16px; height: 16px; accent-color: #f79422; }
+      .mm-row b {
+        font: 700 11px ui-monospace, monospace; color: #ffe0bd; text-align: center;
+        min-width: 34px; padding: 2px 0; border-radius: 5px;
+        background: rgba(247, 148, 34, 0.1); box-shadow: inset 0 0 0 1px rgba(247, 148, 34, 0.18);
+      }
+      .mm-check b, .mm-row-off b {
+        background: none; box-shadow: none; color: var(--tx2);
+        font: 700 9px var(--hud-font); letter-spacing: 0.12em; text-transform: uppercase;
+      }
       .mm-reset {
-        margin-top: 8px;
-        padding: 6px 14px;
+        margin-top: 12px;
+        padding: 8px 16px;
         border: 1px solid rgba(255, 255, 255, 0.14);
         border-radius: 6px;
         background: rgba(255, 255, 255, 0.05);
         color: var(--tx2);
-        font: 600 11px var(--hud-font);
-        letter-spacing: 0.1em;
+        font: 700 10px var(--hud-font);
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
         cursor: pointer;
+        transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
       }
-      .mm-reset:hover { color: #ffe4c4; border-color: rgba(247, 148, 34, 0.4); }
+      .mm-reset:hover { color: #ffe4c4; border-color: rgba(247, 148, 34, 0.45); background: rgba(247, 148, 34, 0.08); }
+      .mm-reset:focus-visible { outline: none; box-shadow: 0 0 0 2px #0b0b0d, 0 0 0 4px #f79422; }
+      /* card title icon */
+      .mm-card-title { display: flex; align-items: center; gap: 10px; }
+      .mm-card-ico { width: 18px; height: 18px; flex: none; fill: none; stroke: var(--copper); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 6px rgba(247, 148, 34, 0.4)); }
+      /* hero crosshair studio */
+      .mm-card-wide { grid-column: 1 / -1; }
+      .xh-layout { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 26px; align-items: stretch; }
+      .xh-controls { display: flex; flex-direction: column; justify-content: center; }
+      .xh-stage { position: relative; display: flex; align-items: center; justify-content: center; }
+      .xh-stage-tag {
+        position: absolute; top: 10px; left: 12px;
+        font: 700 9px var(--hud-font); letter-spacing: 0.24em; color: rgba(255, 220, 180, 0.75);
+        padding: 3px 8px; border-radius: 4px; background: rgba(0, 0, 0, 0.4);
+        box-shadow: inset 0 0 0 1px rgba(255, 178, 92, 0.2);
+      }
+      @media (max-width: 720px) {
+        .xh-layout { grid-template-columns: 1fr; gap: 16px; }
+      }
       @media (max-width: 600px) {
         .mm-cols { gap: 14px; }
         .mm-card { padding: 18px 16px 16px; }
@@ -1395,13 +1493,49 @@
       /* crosshair live preview */
       .xh-preview {
         position: relative;
-        height: 110px;
-        margin-bottom: 14px;
-        border-radius: 8px;
+        flex: 1;
+        min-height: 240px;
+        border-radius: 10px;
+        overflow: hidden;
         background:
-          linear-gradient(rgba(20, 24, 20, 0.4), rgba(20, 24, 20, 0.4)),
-          url("/textures/concrete_color.jpg") center / 200px;
+          radial-gradient(120% 120% at 50% 42%, transparent 45%, rgba(0, 0, 0, 0.55) 100%),
+          linear-gradient(rgba(18, 22, 20, 0.42), rgba(14, 16, 15, 0.5)),
+          url("/textures/concrete_color.jpg") center / 240px;
+        box-shadow: inset 0 0 0 1px rgba(255, 178, 92, 0.14), inset 0 0 60px rgba(0, 0, 0, 0.5);
       }
+      /* faint range-target scanlines + framing ticks over the concrete */
+      .xh-preview::before {
+        content: "";
+        position: absolute; inset: 0; pointer-events: none;
+        background:
+          repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 4px);
+        mix-blend-mode: overlay;
+      }
+      .xh-preview::after {
+        content: "";
+        position: absolute; inset: 14px; pointer-events: none; border-radius: 4px;
+        background:
+          linear-gradient(90deg, rgba(255, 205, 150, 0.5) 0 14px, transparent 14px) 0 0 / 100% 1px no-repeat,
+          linear-gradient(90deg, rgba(255, 205, 150, 0.5) 0 14px, transparent 14px) 100% 100% / 100% 1px no-repeat,
+          linear-gradient(0deg, rgba(255, 205, 150, 0.5) 0 14px, transparent 14px) 0 0 / 1px 100% no-repeat,
+          linear-gradient(0deg, rgba(255, 205, 150, 0.5) 0 14px, transparent 14px) 100% 100% / 1px 100% no-repeat;
+      }
+      .xh-swatches { display: flex; gap: 6px; min-width: 0; flex: 1; }
+      .xh-swatches i {
+        width: 20px; height: 20px; border-radius: 5px; cursor: pointer; flex: none;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+        transition: transform 0.12s ease, box-shadow 0.12s ease;
+      }
+      .xh-swatches i:hover { transform: scale(1.12); }
+      .xh-swatches i.on { box-shadow: 0 0 0 2px #0b0b0d, 0 0 0 4px #f79422; }
+      .mm-row input[type="color"] {
+        width: 30px; height: 24px; padding: 0; border: none; border-radius: 5px;
+        background: none; cursor: pointer; flex: none;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+      }
+      .mm-row input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+      .mm-row input[type="color"]::-webkit-color-swatch { border: none; border-radius: 3px; }
+      .mm-row input[type="color"]:focus-visible { outline: none; box-shadow: 0 0 0 2px #0b0b0d, 0 0 0 4px #f79422; }
       #xh-demo {
         position: absolute;
         left: 50%;
@@ -5331,36 +5465,55 @@
           <div class="mm-pane" id="mm-settings">
             <div class="mm-pane-head">SETTINGS</div>
             <div class="mm-cols">
-              <div class="mm-card">
-                <div class="mm-card-title">Crosshair</div>
-                <div class="xh-preview"><div id="xh-demo"><i class="up"></i><i class="down"></i><i class="left"></i><i class="right"></i></div></div>
-                <label class="mm-row"><span>Length</span><input id="xh-len" type="range" min="3" max="20" step="1" /><b id="xh-len-v"></b></label>
-                <label class="mm-row"><span>Thickness</span><input id="xh-th" type="range" min="1" max="6" step="1" /><b id="xh-th-v"></b></label>
-                <label class="mm-row"><span>Gap</span><input id="xh-gap" type="range" min="0" max="14" step="1" /><b id="xh-gap-v"></b></label>
-                <label class="mm-row"><span>Opacity</span><input id="xh-op" type="range" min="0.3" max="1" step="0.05" /><b id="xh-op-v"></b></label>
-                <label class="mm-row"><span>Color</span><input id="xh-c" type="color" /><b></b></label>
-                <label class="mm-row mm-check"><span>Centre dot</span><input id="xh-dot" type="checkbox" /><b></b></label>
-                <button class="mm-reset" id="xh-reset" type="button">reset to default</button>
+              <div class="mm-card mm-card-wide" id="set-xh">
+                <div class="mm-card-title">
+                  <svg class="mm-card-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>
+                  Crosshair
+                </div>
+                <div class="xh-layout">
+                  <div class="xh-stage">
+                    <div class="xh-preview"><div id="xh-demo"><i class="up"></i><i class="down"></i><i class="left"></i><i class="right"></i></div></div>
+                    <div class="xh-stage-tag">LIVE PREVIEW</div>
+                  </div>
+                  <div class="xh-controls">
+                    <label class="mm-row"><span>Length</span><input id="xh-len" type="range" min="3" max="20" step="1" /><b id="xh-len-v"></b></label>
+                    <label class="mm-row"><span>Thickness</span><input id="xh-th" type="range" min="1" max="6" step="1" /><b id="xh-th-v"></b></label>
+                    <label class="mm-row"><span>Gap</span><input id="xh-gap" type="range" min="0" max="14" step="1" /><b id="xh-gap-v"></b></label>
+                    <label class="mm-row"><span>Opacity</span><input id="xh-op" type="range" min="0.3" max="1" step="0.05" /><b id="xh-op-v"></b></label>
+                    <label class="mm-row"><span>Color</span><span class="xh-swatches" id="xh-swatches"></span><input id="xh-c" type="color" /></label>
+                    <label class="mm-row mm-check"><span>Centre dot</span><input id="xh-dot" type="checkbox" /><b></b></label>
+                    <button class="mm-reset" id="xh-reset" type="button">reset to default</button>
+                  </div>
+                </div>
               </div>
               <div class="mm-card">
-                <div class="mm-card-title">Mouse Sensitivity</div>
+                <div class="mm-card-title">
+                  <svg class="mm-card-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a5 5 0 0 0-5 5v10a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5z"/><path d="M12 2v6"/></svg>
+                  Mouse
+                </div>
                 <label class="mm-row"><span>Sensitivity</span><input id="ct-sens" type="range" min="0.2" max="3" step="0.05" /><b id="ct-sens-v"></b></label>
               </div>
               <div class="mm-card">
-                <div class="mm-card-title">Audio</div>
+                <div class="mm-card-title">
+                  <svg class="mm-card-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14"/></svg>
+                  Audio
+                </div>
                 <label class="mm-row"><span>Master volume</span><input id="au-vol" type="range" min="0" max="1" step="0.05" /><b id="au-vol-v"></b></label>
                 <label class="mm-row"><span>Music volume</span><input id="au-music" type="range" min="0" max="1" step="0.05" /><b id="au-music-v"></b></label>
               </div>
               <div class="mm-card">
-                <div class="mm-card-title">Graphics</div>
-                <label class="mm-row"><span>Resolution</span><select id="gx-res">
-                  <option value="1">Native</option>
-                  <option value="0.85">85%</option>
-                  <option value="0.7">70%</option>
-                  <option value="0.5">50%</option>
-                </select><b></b></label>
+                <div class="mm-card-title">
+                  <svg class="mm-card-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+                  Graphics
+                </div>
+                <label class="mm-row"><span>Resolution</span><div class="seg" id="gx-res" role="radiogroup" aria-label="Resolution scale">
+                  <button type="button" role="radio" data-res="1" class="on" aria-checked="true">Native</button>
+                  <button type="button" role="radio" data-res="0.85" aria-checked="false">85%</button>
+                  <button type="button" role="radio" data-res="0.7" aria-checked="false">70%</button>
+                  <button type="button" role="radio" data-res="0.5" aria-checked="false">50%</button>
+                </div></label>
                 <label class="mm-row mm-check"><span>Filmic vignette</span><input id="gx-vig" type="checkbox" checked /><b></b></label>
-                <label class="mm-row mm-check"><span>Camera shake on hit</span><input id="gx-shake" type="checkbox" checked disabled /><b>soon</b></label>
+                <label class="mm-row mm-check mm-row-off"><span>Camera shake on hit</span><input id="gx-shake" type="checkbox" checked disabled /><b>soon</b></label>
               </div>
             </div>
           </div>
