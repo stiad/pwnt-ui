@@ -2383,6 +2383,19 @@
       }
       .stb-more:hover { text-shadow: 0 0 12px var(--ui-glow); }
       .stb-more:focus-visible { outline: none; box-shadow: 0 0 0 2px #0b0b0d, 0 0 0 4px #f79422; border-radius: 4px; }
+      @media (max-width: 720px) {
+        .lo-bar { gap: 8px; }
+        .lo-slot { flex: 1 1 calc(50% - 4px); padding: 11px 12px; gap: 9px; }
+        .lo-grid { grid-template-columns: 1fr; gap: 0; }
+        .lo-drop { padding: 12px 12px 6px; }
+        .opt-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      }
+      @media (max-width: 480px) {
+        .lo-slot { flex: 1 1 100%; }
+        .opt { flex-wrap: wrap; gap: 8px 10px; }
+        .opt-txt { flex: 1 1 100%; }
+        .opt-btn, .opt-badge { margin-left: 43px; }
+      }
       /* Social: global chat + friends, same forged-card language. */
       .soc-wrap {
         display: flex;
