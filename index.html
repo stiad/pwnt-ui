@@ -2082,12 +2082,24 @@
         border-radius: 0;
         clip-path: var(--chamfer);
         background:
+          repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.022) 0 2px, transparent 2px 6px),
           linear-gradient(180deg, rgba(30, 28, 30, 0.92), rgba(13, 12, 13, 0.95)),
           radial-gradient(ellipse at 50% 0%, rgba(247, 148, 34, 0.14), transparent 60%);
         box-shadow: inset 0 0 0 1px rgba(255, 178, 92, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.07);
         filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.45));
         transition: box-shadow 0.15s, filter 0.15s;
       }
+      .shop-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background:
+          radial-gradient(120% 80% at 100% 100%, rgba(247, 148, 34, 0.08), transparent 55%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 22%);
+      }
+      .shop-card > * { position: relative; z-index: 1; }
       /* Rarity tiers: tinted chrome + corner tag; legendary breathes */
       .shop-card.tier-common { --rc: #9fb3c8; }
       .shop-card.tier-rare { --rc: #5aa8ff; }
@@ -2098,6 +2110,12 @@
           inset 0 1px 0 color-mix(in srgb, var(--rc) 30%, rgba(255, 255, 255, 0.07));
         filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.45))
           drop-shadow(0 0 12px color-mix(in srgb, var(--rc) 22%, transparent));
+      }
+      .shop-card[class*="tier-"]::before {
+        background:
+          radial-gradient(120% 85% at 100% 100%, color-mix(in srgb, var(--rc) 20%, transparent), transparent 58%),
+          radial-gradient(90% 60% at 0% 0%, color-mix(in srgb, var(--rc) 12%, transparent), transparent 55%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 22%);
       }
       .shop-card[class*="tier-"] .shop-prev {
         background:
