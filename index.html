@@ -2221,7 +2221,7 @@
         filter: brightness(1.12);
       }
       .shop-card:hover .shop-prev.tracer .tracer-img {
-        animation: tracer-fire 1.8s cubic-bezier(0.2, 0.72, 0.2, 1);
+        animation: tracer-fire 1.5s cubic-bezier(0.2, 0.72, 0.2, 1);
       }
       .shop-card:hover .shop-prev.tracer::after {
         animation: tracer-flash 0.6s ease-out;
@@ -2231,21 +2231,25 @@
           transform: translateX(-110%) scale(1.0) scaleY(var(--tracer-y));
           opacity: 0.15;
         }
-        27% {
+        20% {
           transform: translateX(110%) scale(1.04) scaleY(var(--tracer-y));
           opacity: 1;
         }
-        42% {
+        33% {
           transform: translateX(-110%) scale(1.0) scaleY(var(--tracer-y));
           opacity: 0.82;
         }
-        69% {
+        53% {
           transform: translateX(110%) scale(1.04) scaleY(var(--tracer-y));
           opacity: 1;
         }
-        78% {
+        66% {
           transform: translateX(-110%) scale(1.0) scaleY(var(--tracer-y));
           opacity: 0.9;
+        }
+        86% {
+          transform: translateX(110%) scale(1.04) scaleY(var(--tracer-y));
+          opacity: 1;
         }
         100% {
           transform: translateX(0) scale(1.04) scaleY(var(--tracer-y));
