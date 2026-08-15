@@ -5368,6 +5368,71 @@
         #party-widget .pw-face { width: 47px; height: 53px; }
         #party-widget .pw-name { font-size: 13px; }
       }
+
+      /* ============================================================
+         MOBILE PASS — consolidated phone rules (kept last so they win)
+         ============================================================ */
+      @media (max-width: 720px) {
+        /* the whole shell is magnified 1.15x on desktop; on phones that
+           just amplifies every fixed width, so drop back to true pixels */
+        #mainmenu { zoom: 1; }
+        .mm-body { padding: 16px 14px 30px; }
+        .mm-head { padding: 12px 14px 10px; gap: 10px 12px; }
+        .mm-logo { height: 34px; }
+
+        /* header wallet + level badge shrink so the top row stays tidy */
+        .mm-wallet { gap: 7px; }
+        .mm-wallet .cur { --chip: 0.92; }
+        .lvl-badge { width: 36px; height: 40px; }
+        .lvl-badge b { font-size: 15px; }
+
+        /* pane titles: ease off the very wide letter tracking */
+        .mm-pane-head { font-size: 19px; letter-spacing: 0.18em; text-indent: 0.18em; }
+
+        /* mode tiles stack full width */
+        .mm-modes { gap: 14px; }
+        .mm-mode { width: 100%; min-height: 196px; padding: 18px; }
+        .mm-mode-name { font-size: 26px; }
+
+        /* leaderboard: keep only the essential columns on a phone */
+        .lb-lad-hdr, .lb-row {
+          grid-template-columns: 30px minmax(0, 1fr) auto auto;
+          gap: 8px; padding-left: 12px; padding-right: 12px;
+        }
+        .lb-lad-hdr span:nth-child(5), .lb-lad-hdr span:nth-child(6),
+        .lb-w, .lb-hs { display: none; }
+        .lb-row { font-size: 14px; }
+        .lb-champ { padding: 16px; gap: 14px; }
+
+        /* social panels stack instead of squeezing side by side */
+        .soc-wrap { flex-direction: column; height: auto; max-width: 100%; }
+        .soc-friends { max-width: none; }
+        .soc-chat { min-height: 48vh; }
+
+        /* featured shop banner reflows to a single readable column */
+        .featured { min-height: 0; }
+        .ft-media { inset: 0 0 0 46%; opacity: 0.5; }
+        .ft-info { max-width: 100%; padding: 16px; }
+        .ft-title { font-size: 24px; }
+        .ft-actions { flex-wrap: wrap; }
+
+        /* shop cards go two-up */
+        .shop-card { width: min(200px, 44vw); }
+
+        /* party widget: contained, un-magnified, docked to the bottom */
+        #party-widget {
+          zoom: 1; width: min(260px, calc(100vw - 24px));
+          top: auto; bottom: 14px; right: 12px;
+        }
+      }
+
+      @media (max-width: 420px) {
+        .mm-wallet .cur { --chip: 0.82; }
+        .mm-pane-head { font-size: 17px; letter-spacing: 0.12em; text-indent: 0.12em; }
+        .mm-tabs button { font-size: 14px; }
+        .shop-card { width: 100%; max-width: 300px; }
+        .mm-mode-name { font-size: 23px; }
+      }
     </style>
   </head>
   <body>

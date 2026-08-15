@@ -1090,6 +1090,7 @@ function renderShop() {
     stash.append(lo);
     if (lo._openSlot && lo._drop) {
       const s = lo._openSlot;
+      lo._drop.style.top = `${s.offsetTop + s.offsetHeight}px`;
       lo._drop.style.setProperty("--notch", `${s.offsetLeft + s.offsetWidth / 2}px`);
     }
     const foot = mk("div", "stash-foot");
