@@ -2128,8 +2128,7 @@
           inset 0 10px 26px rgba(0, 0, 0, 0.55);
       }
       .shop-card[class*="tier-"] .tracer-img {
-        filter: drop-shadow(0 0 12px color-mix(in srgb, var(--rc) 60%, transparent))
-          drop-shadow(0 3px 10px rgba(0, 0, 0, 0.6));
+        mix-blend-mode: screen;
       }
       .shop-card .tier-tag {
         position: absolute;
@@ -2200,11 +2199,8 @@
         max-height: 132%;
         height: auto;
         object-fit: contain;
-        filter: drop-shadow(0 0 12px color-mix(in srgb, var(--c) 55%, transparent));
-        will-change: transform, opacity, filter;
-      }
-      .shop-card.tier-epic .shop-prev.tracer .tracer-img {
-        filter: drop-shadow(0 0 16px color-mix(in srgb, var(--c) 70%, transparent));
+        mix-blend-mode: screen;
+        will-change: transform, opacity;
       }
       /* Secondary bloom that flashes as the projectile passes */
       .shop-card .shop-prev.tracer::after {
@@ -2230,17 +2226,14 @@
         0% {
           transform: translateX(-24%) scale(1.0);
           opacity: 0.32;
-          filter: drop-shadow(0 0 6px color-mix(in srgb, var(--c) 40%, transparent));
         }
         55% {
           transform: translateX(2%) scale(1.06);
           opacity: 1;
-          filter: drop-shadow(0 0 24px color-mix(in srgb, var(--c) 90%, transparent));
         }
         100% {
           transform: translateX(0) scale(1.04);
           opacity: 1;
-          filter: drop-shadow(0 0 14px color-mix(in srgb, var(--c) 60%, transparent));
         }
       }
       @keyframes tracer-flash {
