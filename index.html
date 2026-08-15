@@ -2217,11 +2217,21 @@
         text-shadow: 0 0 14px rgba(247, 148, 34, 0.55);
       }
       .shop-cats .cat-n {
-        margin-left: 9px;
+        display: inline-block;
+        margin-left: 10px;
+        min-width: 18px;
+        padding: 1px 5px;
         font-style: normal;
         font-size: 10px;
-        opacity: 0.7;
-        vertical-align: 1px;
+        line-height: 15px;
+        text-indent: 0;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.3);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+      }
+      .shop-cats button.on .cat-n {
+        background: rgba(247, 148, 34, 0.22);
+        box-shadow: inset 0 0 0 1px rgba(247, 148, 34, 0.5);
       }
       .stash-sec { margin-bottom: 30px; }
       .stash-sec-title {
@@ -2242,49 +2252,23 @@
         height: 1px;
         background: linear-gradient(90deg, transparent, rgba(247, 148, 34, 0.3), transparent);
       }
-      .sst-label { flex: none; }
-      .sst-count {
-        flex: none; font-style: normal;
-        font: 700 9px var(--hud-font); letter-spacing: 0.14em;
-        color: var(--tx2); padding: 3px 9px; border-radius: 999px;
-        background: rgba(255, 255, 255, 0.05); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      /* slim toolbar under the stash tabs: count on the left, a standing
+         pointer back to the shop on the right */
+      .stash-bar {
+        display: flex; align-items: center; justify-content: space-between; gap: 14px;
+        max-width: 1100px; margin: 0 auto 18px; padding: 0 2px;
       }
-      /* equipped marker under the section title */
-      .stash-equipped {
-        display: flex; align-items: center; gap: 9px;
-        max-width: 1100px; margin: -6px auto 18px;
-        font: 700 10px var(--hud-font); letter-spacing: 0.16em;
+      .stb-count { font: 700 11px var(--hud-font); letter-spacing: 0.16em; color: var(--tx2); }
+      .stb-more {
+        border: none; background: none; cursor: pointer; padding: 4px 2px;
+        font: 800 11px var(--hud-font); letter-spacing: 0.12em; color: var(--ui-hi);
+        transition: color 0.15s ease, text-shadow 0.15s ease;
       }
-      .seq-dot {
-        width: 8px; height: 8px; border-radius: 50%; flex: none;
-        background: #33e08a; box-shadow: 0 0 10px rgba(51, 224, 138, 0.8);
-      }
-      .seq-kicker { color: var(--tx2); }
-      .seq-name { color: var(--ui-hi); letter-spacing: 0.04em; text-shadow: 0 0 12px var(--ui-glow); }
-      /* empty locker state */
-      .stash-empty {
-        max-width: 620px; margin: 8px auto 0; padding: 44px 28px; text-align: center;
-        border-radius: 0; clip-path: var(--chamfer);
-        box-shadow: inset 0 0 0 1px rgba(255, 178, 92, 0.18);
-        background:
-          linear-gradient(160deg, rgba(18, 26, 32, 0.7), rgba(11, 15, 19, 0.85)),
-          radial-gradient(90% 120% at 50% 0%, rgba(247, 148, 34, 0.08), transparent 60%);
-      }
-      .se-title {
-        font: 800 15px var(--hud-font); letter-spacing: 0.22em; color: var(--ui-hi);
-        text-shadow: 0 0 14px var(--ui-glow); margin-bottom: 10px;
-      }
-      .se-sub { font: 600 13px var(--hud-font); line-height: 1.5; color: var(--tx2); margin-bottom: 22px; }
-      .se-cta {
-        padding: 11px 26px; border: none; cursor: pointer;
-        clip-path: var(--chamfer);
-        font: 800 11px var(--hud-font); letter-spacing: 0.18em; color: var(--ui-ink, #1a1206);
-        background: linear-gradient(180deg, #ffbf68, #f79422);
-        box-shadow: 0 2px 14px rgba(247, 148, 34, 0.4);
-        transition: transform 0.12s ease, box-shadow 0.15s ease;
-      }
-      .se-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(247, 148, 34, 0.6); }
-      .se-cta:focus-visible { outline: none; box-shadow: 0 0 0 2px #0b0b0d, 0 0 0 4px #f79422; }
+      .stb-more:hover { text-shadow: 0 0 12px var(--ui-glow); }
+      .stb-more:focus-visible { outline: none; box-shadow: 0 0 0 2px #0b0b0d, 0 0 0 4px #f79422; border-radius: 4px; }
+      /* empty locker: a quiet single line — the toolbar already points to the shop */
+      .stash-empty { max-width: 1100px; margin: 0 auto; padding: 40px 24px; text-align: center; }
+      .se-sub { font: 600 13px var(--hud-font); line-height: 1.5; color: var(--tx2); }
       /* Stash active-loadout summary bar */
       .stash-loadout {
         max-width: 1100px;

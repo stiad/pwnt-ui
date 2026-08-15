@@ -1006,36 +1006,25 @@ function renderShop() {
 
     const label = (KINDS.find(([k]) => k === stashCat) || ["", stashCat])[1];
     const items = stashItems(stashCat).sort(byRarity);
-    const equippedItem = items.find(
-      (i) => equip[i.kind] === i.id || (i.id.endsWith("_default") && !equip[i.kind]),
-    );
 
-    const head = mk("div", "stash-sec-title");
-    head.append(mk("span", "sst-label", label));
-    head.append(mk("i", "sst-count", `${items.length} owned`));
-    stash.append(head);
+    const gotoShop = () => {
+      shopCat = stashCat;
+      const tab = document.querySelector('.mm-tabs [data-tab="shop"]');
+      if (tab) tab.click();
+      renderShop();
+    };
 
-    if (equippedItem) {
-      const eq = mk("div", "stash-equipped");
-      eq.append(mk("span", "seq-dot"));
-      eq.append(mk("span", "seq-kicker", "EQUIPPED"));
-      eq.append(mk("span", "seq-name", equippedItem.name));
-      stash.append(eq);
-    }
+    const bar = mk("div", "stash-bar");
+    bar.append(mk("span", "stb-count", `${items.length} ${items.length === 1 ? "item" : "items"}`));
+    const more = mk("button", "stb-more", "Get more in the Armory \u2192");
+    more.type = "button";
+    on(more, "click", gotoShop);
+    bar.append(more);
+    stash.append(bar);
 
     if (!items.length) {
       const empty = mk("div", "stash-empty");
-      empty.append(mk("div", "se-title", "NOTHING IN THIS LOCKER YET"));
-      empty.append(mk("div", "se-sub", `You don't own any ${label.toLowerCase()} — pick some up in the Armory.`));
-      const cta = mk("button", "se-cta", "OPEN THE ARMORY");
-      cta.type = "button";
-      on(cta, "click", () => {
-        shopCat = stashCat;
-        const tab = document.querySelector('.mm-tabs [data-tab="shop"]');
-        if (tab) tab.click();
-        renderShop();
-      });
-      empty.append(cta);
+      empty.append(mk("div", "se-sub", `No ${label.toLowerCase()} yet — grab some in the Armory to fill this slot.`));
       stash.append(empty);
     } else {
       const grid = document.createElement("div");
