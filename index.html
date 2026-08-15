@@ -2229,28 +2229,39 @@
       @keyframes tracer-fire {
         0% {
           transform: translateX(-110%) scale(1.0) scaleY(var(--tracer-y));
-          opacity: 0.15;
+          opacity: 0;
         }
-        20% {
+        3% { opacity: 1; }
+        24% {
           transform: translateX(110%) scale(1.04) scaleY(var(--tracer-y));
           opacity: 1;
         }
-        33% {
+        25% { opacity: 0; }
+        27% {
           transform: translateX(-110%) scale(1.0) scaleY(var(--tracer-y));
-          opacity: 0.82;
+          opacity: 0;
         }
-        53% {
+        30% { opacity: 1; }
+        51% {
           transform: translateX(110%) scale(1.04) scaleY(var(--tracer-y));
           opacity: 1;
         }
-        66% {
+        52% { opacity: 0; }
+        54% {
           transform: translateX(-110%) scale(1.0) scaleY(var(--tracer-y));
-          opacity: 0.9;
+          opacity: 0;
         }
-        86% {
+        57% { opacity: 1; }
+        78% {
           transform: translateX(110%) scale(1.04) scaleY(var(--tracer-y));
           opacity: 1;
         }
+        79% { opacity: 0; }
+        81% {
+          transform: translateX(-110%) scale(1.0) scaleY(var(--tracer-y));
+          opacity: 0;
+        }
+        84% { opacity: 1; }
         100% {
           transform: translateX(0) scale(1.04) scaleY(var(--tracer-y));
           opacity: 1;
